@@ -5,6 +5,8 @@
  */
 package main;
 
+import model.RSA;
+
 /**
  *
  * @author p1408610
@@ -16,6 +18,9 @@ public class main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        RSA rsa = new RSA(1024);
+        System.out.println(rsa.toString());
+        
     }
     
 }
