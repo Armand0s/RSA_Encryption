@@ -7,11 +7,20 @@ package main;
 
 import model.RSA;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
 /**
  *
  * @author p1408610
  */
 public class main {
+
+    public static Logger logger;
 
     /**
      * @param args the command line arguments
@@ -20,7 +29,29 @@ public class main {
         // TODO code application logic here
         RSA rsa = new RSA(1024);
         System.out.println(rsa.toString());
-        
+
+        try {
+            logger = Logger.getLogger("MyLog");
+            FileHandler fileHandler;
+
+            // get date for logfile name
+            DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+            //get current date time with Date()
+            Date date = new Date();
+
+            fileHandler = new FileHandler("log_"+dateFormat.format(date)+".log");
+            logger.addHandler(fileHandler);
+            SimpleFormatter formatter = new SimpleFormatter();
+            fileHandler.setFormatter(formatter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        // the following statement is used to log any messages
+        logger.info("My first log");
+
+
     }
     
 }
