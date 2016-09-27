@@ -6,10 +6,12 @@
 package main;
 
 import model.RSA;
+import model.Server;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -46,10 +48,20 @@ public class main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        // the following statement is used to log any messages
-        logger.info("My first log");
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Client ou server ?\n");
+        String answer = scan.nextLine();
+        switch (answer) {
+            case "client":
+                break;
+            case "server":
+                System.out.println("Server port ?\n");
+                int port = scan.nextInt();
+                Server server = new Server(port);
+                break;
+            default:
+                System.err.println("Usage : \"cleint\" or \"server\"");
+        }
 
 
     }

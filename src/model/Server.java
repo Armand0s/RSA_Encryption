@@ -36,7 +36,7 @@ public class Server {
     }
 
     private void waitClient() {
-        logfile.info("Server created. IP :" +this.serverSocket.getLocalSocketAddress()+":" + this.serverSocket.getLocalPort());
+        logfile.info("Server created. IP :" +this.serverSocket.getInetAddress().getHostAddress()+":" + this.serverSocket.getLocalPort());
         logfile.info("Waiting a client......");
         while(true) {
 
@@ -52,6 +52,7 @@ public class Server {
             // A new client is connected, add this client to the map
             mutexMap.lock();
                 clients.put(numNewClient,client);
+            mutexMap.unlock();
 
 
 

@@ -23,6 +23,7 @@ public class RSA {
     // p, q big prime numbers
     private BigInteger p; 
     private BigInteger q;
+    private BigInteger n;
 
     private BigInteger phi; // (p-1)*(q-1)
     
@@ -42,7 +43,8 @@ public class RSA {
     }
 
     private void createKeys() {
-        createPhi();
+        phi = createPhi();
+        n = createN();
         createPublicKey();
 
         publicKey = new RSAPublicKey(phi,e);
@@ -65,9 +67,15 @@ public class RSA {
         e = phi.add(iterator.subtract(BigInteger.ONE));
     }
     
-    private void createPhi() {
-       phi = (p.subtract(new BigInteger("1")).multiply(p.subtract(new BigInteger("1"))));
+    private BigInteger createPhi() {
+            return (p.subtract(new BigInteger("1")).multiply(p.subtract(new BigInteger("1"))));
     }
+
+    private BigInteger createN() {
+        return p.multiply(q);
+    };
+
+
 
     private BigInteger pgcd(BigInteger a,BigInteger b) {
         BigInteger r;
@@ -82,11 +90,16 @@ public class RSA {
     public String toString() {
         String ret = "p : " + p.toString() + "\n"
                 + "q : " + q.toString() + "\n"
+                + "n :" + n.toString() + "\n"
                 + "phi : " + phi.toString() + "\n"
                 + "e : " + e.toString() + "\n"
                 + "public Key : (" + phi.toString() + "," + e.toString()+"\n"
                 + "bit lenght : " + p.bitLength() + "\n";
         return ret;
+    }
+
+    public synchronized String encrypt(String message, BigInteger RSAPublicKey) {
+        return (new BigInteger(message.getBytes())).modPow(e, n).toString();
     }
 
 }

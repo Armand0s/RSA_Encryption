@@ -10,6 +10,8 @@ public class RSAPrivateKey {
     private BigInteger p;
     private BigInteger q;
 
+    ////////// format (p,q) //////////
+
     public RSAPrivateKey(BigInteger p, BigInteger q) {
         this.p = p;
         this.q = q;

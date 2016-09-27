@@ -7,35 +7,35 @@ import java.math.BigInteger;
  */
 public class RSAPublicKey {
 
-    private BigInteger phi;
     private BigInteger e;
+    private BigInteger n;
 
-    public RSAPublicKey(BigInteger phi,BigInteger e) {
-        this.phi = phi;
+    ///////// format (e,n) ////////
+
+    public RSAPublicKey(BigInteger e, BigInteger n) {
         this.e = e;
+        this.n = n;
     }
 
     public BigInteger getE() {
         return e;
     }
 
-    public BigInteger getPhi() {
-        return phi;
+    public BigInteger getN() {
+        return n;
     }
 
     public void setE(BigInteger e) {
         this.e = e;
     }
 
-    public void setPhi(BigInteger phi) {
-        this.phi = phi;
+    public void setN(BigInteger n) {
+        this.n = n;
     }
 
     @Override
     public String toString() {
-        String ret =
-                "phi = " + phi.toString() + "\n" +
-                "e   = " + e.toString();
-        return ret;
+        return  "e   = " + e.toString() +
+                "n = " + n.toString() + "\n";
     }
 }
