@@ -5,8 +5,10 @@
  */
 package main;
 
+import model.Model;
 import model.RSA;
 import model.Server;
+import ui.ControlGroup;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,7 +31,13 @@ public class main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        RSA rsa = new RSA(1024);
+        javax.swing.SwingUtilities.invokeLater( new Runnable() {
+            public void run() {
+                Model model = new Model();
+                ControlGroup controler = new ControlGroup(model);
+            }
+        });
+        /*RSA rsa = new RSA(1024);
         System.out.println(rsa.toString());
 
         try {
@@ -61,8 +69,7 @@ public class main {
                 break;
             default:
                 System.err.println("Usage : \"cleint\" or \"server\"");
-        }
-
+        }*/
 
     }
     
