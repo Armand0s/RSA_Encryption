@@ -5,8 +5,9 @@
  */
 package main;
 
-import model.RSA;
-import model.Server;
+import model.Client.Client;
+import model.Common.RSA;
+import model.Server.Server;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,15 +30,16 @@ public class main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        RSA rsa = new RSA(1024);
+        RSA rsa = new RSA(64);
         System.out.println(rsa.toString());
+        //System.out.println(System.getProperty("user.dir"));
 
         try {
             logger = Logger.getLogger("MyLog");
             FileHandler fileHandler;
 
             // get date for logfile name
-            DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH'h'mm'm'ss's'");
             //get current date time with Date()
             Date date = new Date();
 
@@ -49,10 +51,18 @@ public class main {
             e.printStackTrace();
         }
         Scanner scan = new Scanner(System.in);
-        System.out.println("Client ou server ?\n");
+        System.out.println("client or server ?\n");
         String answer = scan.nextLine();
         switch (answer) {
             case "client":
+                System.out.println("IP server ?\n");
+                String ip = scan.nextLine();
+                System.out.println("Port server ?\n");
+                int portserver = scan.nextInt();
+                System.out.println("Pseudo ?\n");
+                String pseudo = scan.nextLine();
+                Client client = new Client(ip,portserver,pseudo);
+
                 break;
             case "server":
                 System.out.println("Server port ?\n");
@@ -60,9 +70,8 @@ public class main {
                 Server server = new Server(port);
                 break;
             default:
-                System.err.println("Usage : \"cleint\" or \"server\"");
+                logger.severe("Usage : \"client\" or \"server\"");
         }
-
 
     }
     

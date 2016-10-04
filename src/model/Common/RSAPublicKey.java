@@ -1,4 +1,4 @@
-package model;
+package model.Common;
 
 import java.math.BigInteger;
 
