@@ -20,7 +20,6 @@ public class ThreadClient extends Thread{
     private String pseudo;
 
     private Keys keys;
-    private Keys tmpKeys;
 
 
 
@@ -38,6 +37,7 @@ public class ThreadClient extends Thread{
 
     @Override
     public void run() {
+
 
     }
 }

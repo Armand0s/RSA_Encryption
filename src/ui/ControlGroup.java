@@ -13,13 +13,13 @@ import model.Model;
  */
 public class ControlGroup {
     private Model model;
-    private ViewConnect view;
+    private View view;
     
     public ControlGroup(Model model)
     {
         this.model = model;
-        view = new ViewConnect(model);
-        ControlButtonConnect controlButtonConnect = new ControlButtonConnect(model, view);
+        view = new View(model);
+        Control control = new ControlConnect(model, view);
         view.display();
     }
 }

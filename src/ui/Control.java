@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
  *
  * @author Nicolas
  */
-public class ControlButton implements ActionListener{
+public abstract class Control implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {

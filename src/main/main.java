@@ -8,6 +8,9 @@ package main;
 import model.Client.Client;
 import model.Common.RSA;
 import model.Server.Server;
+import model.Model;
+import model.Common.*;
+import ui.ControlGroup;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -31,8 +34,13 @@ public class main {
     public static void main(String[] args) {
         // TODO code application logic here
         RSA rsa = new RSA(64);
-        System.out.println(rsa.toString());
-        //System.out.println(System.getProperty("user.dir"));
+
+        javax.swing.SwingUtilities.invokeLater( new Runnable() {
+            public void run() {
+                Model model = new Model();
+                ControlGroup controler = new ControlGroup(model);
+            }
+        });
 
         try {
             logger = Logger.getLogger("MyLog");
@@ -55,14 +63,6 @@ public class main {
         String answer = scan.nextLine();
         switch (answer) {
             case "client":
-                System.out.println("IP server ?\n");
-                String ip = scan.nextLine();
-                System.out.println("Port server ?\n");
-                int portserver = scan.nextInt();
-                System.out.println("Pseudo ?\n");
-                String pseudo = scan.nextLine();
-                Client client = new Client(ip,portserver,pseudo);
-
                 break;
             case "server":
                 System.out.println("Server port ?\n");
@@ -73,6 +73,7 @@ public class main {
                 logger.severe("Usage : \"client\" or \"server\"");
         }
 
+        }
+
     }
-    
-}
+

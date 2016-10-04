@@ -91,7 +91,18 @@ public class Server {
         running = false;
     }
 
-    public void braadcast(String message) {
-
+    public boolean braadcast(String message) {
+        for (int i=0;i<clients.size();i++) {
+            if (sendMessage(message,clients.get(i))) {
+                return false;
+            }
+        }
+        return true;
     }
+
+    private boolean sendMessage(String message,ThreadClient client) {
+        return false;
+    }
+
+
 }
