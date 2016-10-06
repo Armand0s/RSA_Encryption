@@ -1,0 +1,20 @@
+Le serveur est lancé et génère une clef public/privée
+
+--Quand un client se connecte
+Un client se connecte au serveur et lui envoi sa clef publique pour la sauvegarder
+Le serveur vérifie s'il y a un chef
+Si oui
+    Le serveur envoie la clef publique du chef pour pouvoir demander la clef secrète
+    Le client demande au chef de salon la clef
+    Le chef de salon envoie la clef au client
+    Le client peut parler
+Si non
+    Le serveur élit le client qui vient de se connecter en tant que chef de salon
+    Le chef de salon génère une clef
+
+--Quand un client se déconnecte
+Le serveur vérifie si le client déconnecté était le chef de salon
+Si oui
+    Le serveur élit un client en tant que chef de salon
+    Le chef de salon génère une clef
+    Le chef de salon renvoie la clef à tous les clients restants
