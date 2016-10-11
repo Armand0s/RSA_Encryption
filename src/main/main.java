@@ -31,46 +31,16 @@ public class main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        RSA rsa = new RSA(64);
+
 
         javax.swing.SwingUtilities.invokeLater( new Runnable() {
             public void run() {
                 Model model = new Model();
                 ControlGroup controler = new ControlGroup(model);
+                if(!controler.init())
+                    return;
             }
         });
-
-        try {
-            logger = Logger.getLogger("MyLog");
-            FileHandler fileHandler;
-
-            // get date for logfile name
-            DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH'h'mm'm'ss's'");
-            //get current date time with Date()
-            Date date = new Date();
-
-            fileHandler = new FileHandler("log_"+dateFormat.format(date)+".log");
-            logger.addHandler(fileHandler);
-            SimpleFormatter formatter = new SimpleFormatter();
-            fileHandler.setFormatter(formatter);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Scanner scan = new Scanner(System.in);
-        System.out.println("client or server ?\n");
-        String answer = scan.nextLine();
-        switch (answer) {
-            case "client":
-                break;
-            case "server":
-                System.out.println("Server port ?\n");
-                int port = scan.nextInt();
-                Server server = new Server(port);
-                break;
-            default:
-                logger.severe("Usage : \"client\" or \"server\"");
-        }
-
         }
 
     }
