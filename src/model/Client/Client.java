@@ -6,7 +6,7 @@ import java.io.*;
 import java.net.Socket;
 
 /**
- * Created by Armand on 27/09/2016.
+ * @author Armand Souchon
  */
 public class Client {
 
@@ -49,6 +49,7 @@ public class Client {
 
         /////// add RSA exchange here ///////
 
-                return true;
+
+        return true;
     }
 }

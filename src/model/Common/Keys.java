@@ -1,7 +1,7 @@
 package model.Common;
 
 /**
- * Created by Armand on 27/09/2016.
+ * @author Armand Souchon
  */
 public class Keys {
 

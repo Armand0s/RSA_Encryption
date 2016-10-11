@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
- * Created by Armand on 22/09/2016.
+ * @author Armand Souchon
  */
 public class Server {
 

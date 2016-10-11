@@ -3,7 +3,7 @@ package model.Client;
 import java.io.IOException;
 
 /**
- * Created by Armand on 27/09/2016.
+ * @author Armand Souchon
  */
 public class ServerListener extends Thread{
 

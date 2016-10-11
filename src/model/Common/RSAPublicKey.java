@@ -3,7 +3,7 @@ package model.Common;
 import java.math.BigInteger;
 
 /**
- * Created by Armand on 22/09/2016.
+ * @author Armand Souchon
  */
 public class RSAPublicKey {
 

@@ -10,7 +10,7 @@ import java.security.SecureRandom;
 
 /**
  *
- * @author p1408610
+ * @author Armand Souchon
  */
 public class RSA {
 
@@ -140,9 +140,9 @@ public class RSA {
         return ret;
     }
 
-    public synchronized String encrypt(String message, RSAPublicKey publickey) {
+    /*public synchronized String encrypt(String message, RSAPublicKey publickey) {
         return (new BigInteger(message.getBytes())).modPow(publickey.getE(), publickey.getN()).toString();
-    }
+    }*/
 
     public synchronized BigInteger encrypt(BigInteger message, RSAPublicKey publickey) {
         return message.modPow(publickey.getE(), publickey.getN());
