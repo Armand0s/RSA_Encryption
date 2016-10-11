@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ui;
+package controller;
 
 import java.awt.event.ActionEvent;
 
 import model.Model;
+import ui.View;
 
 /**
  *

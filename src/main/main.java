@@ -5,12 +5,10 @@
  */
 package main;
 
-import model.Client.Client;
 import model.Common.RSA;
 import model.Server.Server;
 import model.Model;
-import model.Common.*;
-import ui.ControlGroup;
+import controller.ControlGroup;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

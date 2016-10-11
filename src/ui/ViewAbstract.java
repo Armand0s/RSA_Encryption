@@ -5,6 +5,8 @@
  */
 package ui;
 
+import controller.Control;
+
 import javax.swing.JFrame;
 
 /**

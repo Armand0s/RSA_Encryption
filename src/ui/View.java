@@ -7,6 +7,7 @@ package ui;
 
 import javax.swing.*;
 
+import controller.Control;
 import model.Model;
 
 import java.awt.*;
@@ -18,14 +19,14 @@ import java.awt.*;
 public class View extends ViewAbstract {
     protected Model model;
     
-    protected JPanel panelConnect;
-    protected JLabel labelIp, labelName;
-    protected JButton buttonLogin, buttonQuit;
-    protected JTextField textFieldIp, textFieldName;
+    public JPanel panelConnect;
+    public JLabel labelIp, labelName;
+    public JButton buttonLogin, buttonQuit;
+    public JTextField textFieldIp, textFieldName;
 
-    protected JTextArea textAreaChatLog;
-    protected JTextField textFieldMessageZone;
-    protected JPanel panelChat;
+    public JTextArea textAreaChatLog;
+    public JTextField textFieldMessageZone;
+    public JPanel panelChat;
     
     public View(Model model){
         this.model = model;
