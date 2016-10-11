@@ -1,6 +1,7 @@
 package model.Client;
 
 import model.Common.Keys;
+import model.Common.RSA;
 
 import java.io.*;
 import java.net.Socket;
@@ -25,6 +26,7 @@ public class Client {
         this.ipserver = ipserver;
         this.port = port;
         this.pseudo = pseudo;
+        keys = new RSA(1024).getKeys();
         run();
     }
 
@@ -35,11 +37,11 @@ public class Client {
             System.err.println("Unable to connect to server IP:"+ipserver+"/"+port);
             return false;
         }
-        System.out.println("Connected to server IP:"+ipserver+"/"+port);
+        System.out.println("Connected to server IP:" + ipserver + "/" + port);
 
         try {
-            in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
+            in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
             System.err.println("Unable to connect socket streams");
             return false;
@@ -47,8 +49,17 @@ public class Client {
 
         new ServerListener(this).start();
 
-        /////// add RSA exchange here ///////
-
+        // Public key sent to the server
+        MessageType messageType = new MessageType();
+        messageType.setType(MessageType.Type.SendKey);
+        messageType.setData(keys.getPublicKey());
+        try {
+            out.writeObject(messageType);
+            out.flush();
+        } catch (IOException e) {
+            System.err.println("Can't send the public key");
+            return false;
+        }
 
         return true;
     }
