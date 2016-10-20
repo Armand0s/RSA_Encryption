@@ -89,7 +89,7 @@ public class ControlGroup {
         Scanner scan = new Scanner(System.in);
         System.out.println("Server port ?\n");
         int port = scan.nextInt();
-        
+
         Server server = new Server(port);
     }
 
