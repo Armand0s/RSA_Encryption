@@ -78,6 +78,7 @@ public class ControlGroup {
         String serverIP = scan.nextLine();
         System.out.println("Server port ?\n");
         int serverPort = scan.nextInt();
+        scan.nextLine();
         System.out.println("Pseudo ?\n");
         String pseudo = scan.nextLine();
 
