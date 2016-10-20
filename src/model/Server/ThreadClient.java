@@ -81,7 +81,7 @@ public class ThreadClient extends Thread{
                 main.logger.severe("Received object not recognized from client");
                 return false;
             }
-            if (message.getType() == MessageType.Type.SendKey){
+            if (message.getType() == MessageType.Type.RSAKeys){
                 RSAKeys.setPublicKey((RSAPublicKey) message.getData());
                 keyReceived = true;
             }

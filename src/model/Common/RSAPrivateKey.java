@@ -1,11 +1,12 @@
 package model.Common;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 /**
  * @author Armand Souchon
  */
-public class RSAPrivateKey {
+public class RSAPrivateKey implements Serializable{
 
     private BigInteger d;
     private BigInteger n;

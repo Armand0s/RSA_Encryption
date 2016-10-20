@@ -140,16 +140,12 @@ public class RSA {
         return ret;
     }
 
-    /*public synchronized String encrypt(String message, RSAPublicKey publickey) {
-        return (new BigInteger(message.getBytes())).modPow(publickey.getE(), publickey.getN()).toString();
-    }*/
-
-    public synchronized BigInteger encrypt(BigInteger message, RSAPublicKey publickey) {
-        return message.modPow(publickey.getE(), publickey.getN());
+    public static synchronized byte[] decrypt(byte[] byteArray, RSAPrivateKey privateKey) {
+        return new BigInteger(byteArray).modPow(privateKey.getD(), privateKey.getN()).toByteArray();
     }
 
-    public synchronized String decrypt(String message) {
-        return new String((new BigInteger(message)).modPow(e, n).toByteArray());
+    public static synchronized byte[] encrypt(byte[] byteArray, RSAPublicKey publicKey) {
+        return new BigInteger(byteArray).modPow(publicKey.getE(), publicKey.getN()).toByteArray();
     }
 
 }

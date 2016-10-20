@@ -7,7 +7,9 @@ import java.io.Serializable;
  */
 public class MessageType implements Serializable{
     public enum Type {
-        SendKey,
+        RSAKeys,
+        RSAPublicKey,
+        Pseudo,
         Message
     }
     private Type type;

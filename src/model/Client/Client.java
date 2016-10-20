@@ -1,8 +1,7 @@
 package model.Client;
 
-import model.Common.RSAKeys;
-import model.Common.MessageType;
-import model.Common.RSA;
+import main.main;
+import model.Common.*;
 
 import java.io.*;
 import java.net.Socket;
@@ -27,7 +26,7 @@ public class Client {
         this.ipserver = ipserver;
         this.port = port;
         this.pseudo = pseudo;
-        RSAKeys = new RSA(1024).getRSAKeys();
+        tmpRSAKeys = new RSA(1024).getRSAKeys();
         run();
     }
 
@@ -36,11 +35,17 @@ public class Client {
         boolean resInit;
         resInit = initClient();
 
+        boolean resReceivePublicKeyOfServer;
+        resReceivePublicKeyOfServer = receiveRSAPublicKeyOfServer();
+
         boolean resSendKey;
         resSendKey = sendRSAPublickeyToServer();
 
+        boolean resReceiveFinalKeys;
+        resReceiveFinalKeys = receiveFinalKeysFromServer();
 
-        return resInit && resSendKey;
+        new ServerListener(this).start();
+        return resInit && resSendKey && resReceiveFinalKeys;
     }
 
 
@@ -63,7 +68,30 @@ public class Client {
             return false;
         }
 
-        new ServerListener(this).start();
+
+
+        return true;
+    }
+
+    private boolean receiveRSAPublicKeyOfServer() {
+        MessageType messageType;
+        boolean publickeyReceived = false;
+        while (!publickeyReceived) {
+            try {
+                byte[] arraybyte = SerializableUtils.readUnknownByteArrayLenght(in);
+                messageType = (MessageType) SerializableUtils.convertFromBytes(arraybyte);
+            } catch (IOException e) {
+                System.err.println("Unable to get Key from client");
+                return false;
+            } catch (ClassNotFoundException e) {
+                System.err.println("Received object not recognized from client");
+                return false;
+            }
+            if (messageType.getType() == MessageType.Type.RSAKeys){
+                RSAKeys = (RSAKeys) messageType.getData();
+                publickeyReceived = true;
+            }
+        }
         return true;
     }
 
@@ -71,7 +99,7 @@ public class Client {
     private boolean sendRSAPublickeyToServer() {
         // Public key sent to the server
         MessageType messageType = new MessageType();
-        messageType.setType(MessageType.Type.SendKey);
+        messageType.setType(MessageType.Type.RSAPublicKey);
         messageType.setData(RSAKeys.getPublicKey());
         try {
             out.writeObject(messageType);
@@ -81,6 +109,52 @@ public class Client {
             return false;
         }
         return true;
+    }
+
+
+    private boolean receiveFinalKeysFromServer() {
+        MessageType messageType;
+        boolean keysReceived = false;
+        while (!keysReceived) {
+            try {
+
+                messageType = (MessageType) in.readObject();
+
+
+
+            } catch (IOException e) {
+                System.err.println("Unable to get Key from client");
+                return false;
+            } catch (ClassNotFoundException e) {
+                System.err.println("Received object not recognized from client");
+                return false;
+            }
+            if (messageType.getType() == MessageType.Type.RSAKeys){
+                RSAKeys = (RSAKeys) messageType.getData();
+                keysReceived = true;
+            }
+        }
+        return true;
+    }
+
+    // DONE
+    private boolean sendPseudoToServer() throws IOException{
+        byte[] messageTypeByteArray;
+        MessageType messageType = new MessageType();
+        messageType.setType(MessageType.Type.Pseudo);
+        messageType.setData(pseudo);
+        try {
+            messageTypeByteArray = SerializableUtils.convertToBytes(messageType);
+
+            out.write(messageTypeByteArray);
+            out.flush();
+        } catch (IOException e) {
+            System.err.println("Unable to send Pseudo to server");
+            return false;
+        }
+
+    return true;
+
     }
 
 }

@@ -1,9 +1,11 @@
 package model.Common;
 
+import java.io.Serializable;
+
 /**
  * @author Armand Souchon
  */
-public class RSAKeys {
+public class RSAKeys implements Serializable{
 
     private RSAPrivateKey privateKey;
     private RSAPublicKey publicKey;
