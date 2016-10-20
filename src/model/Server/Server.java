@@ -93,7 +93,7 @@ public class Server {
         running = false;
     }
 
-    public boolean braadcast(String message) {
+    public boolean broadcast(String message) {
         for (int i=0;i<clients.size();i++) {
             if (sendMessage(message,clients.get(i))) {
                 return false;

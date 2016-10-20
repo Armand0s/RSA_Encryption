@@ -24,6 +24,7 @@ public class ServerListener extends Thread{
                 } catch (IOException e) {
                     System.err.println("Server closed connection");
                     message = "";
+                    break;
                 }
 
                 System.out.println(message);
