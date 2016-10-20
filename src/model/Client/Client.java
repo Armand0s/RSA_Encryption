@@ -1,6 +1,7 @@
 package model.Client;
 
 import model.Common.Keys;
+import model.Common.MessageType;
 import model.Common.RSA;
 
 import java.io.*;

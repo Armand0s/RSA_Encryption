@@ -1,4 +1,4 @@
-package model.Client;
+package model.Common;
 
 import java.io.Serializable;
 

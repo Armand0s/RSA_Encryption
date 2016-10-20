@@ -2,3 +2,4 @@
 out/*
 manifest.mf
 build.xml
+log_*

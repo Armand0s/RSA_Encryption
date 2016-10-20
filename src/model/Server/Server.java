@@ -99,7 +99,7 @@ public class Server {
         }
         return true;
     }
-
+    // TODO
     private boolean sendMessage(String message,ThreadClient client) {
         return false;
     }
