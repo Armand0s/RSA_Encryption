@@ -3,17 +3,17 @@ package model.Common;
 /**
  * @author Armand Souchon
  */
-public class Keys {
+public class RSAKeys {
 
     private RSAPrivateKey privateKey;
     private RSAPublicKey publicKey;
 
-    public Keys(RSAPrivateKey privateKey, RSAPublicKey publicKey) {
+    public RSAKeys(RSAPrivateKey privateKey, RSAPublicKey publicKey) {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
     }
 
-    public Keys() {
+    public RSAKeys() {
     }
 
     public RSAPrivateKey getPrivateKey() {

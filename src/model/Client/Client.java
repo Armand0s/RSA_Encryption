@@ -1,6 +1,6 @@
 package model.Client;
 
-import model.Common.Keys;
+import model.Common.RSAKeys;
 import model.Common.MessageType;
 import model.Common.RSA;
 
@@ -20,18 +20,33 @@ public class Client {
     public ObjectInputStream in;
     public ObjectOutputStream out;
 
-    private Keys keys;
-    private Keys tmpKeys;
+    private RSAKeys RSAKeys;
+    private RSAKeys tmpRSAKeys;
 
     public Client(String ipserver,int port, String pseudo) {
         this.ipserver = ipserver;
         this.port = port;
         this.pseudo = pseudo;
-        keys = new RSA(1024).getKeys();
+        RSAKeys = new RSA(1024).getRSAKeys();
         run();
     }
 
     private boolean run() {
+
+        boolean resInit;
+        resInit = initClient();
+
+        boolean resSendKey;
+        resSendKey = sendRSAPublickeyToServer();
+
+
+        return resInit && resSendKey;
+    }
+
+
+
+
+    private boolean initClient() {
         try {
             socket = new Socket(ipserver, port);
         } catch (IOException e) {
@@ -49,11 +64,15 @@ public class Client {
         }
 
         new ServerListener(this).start();
+        return true;
+    }
 
+
+    private boolean sendRSAPublickeyToServer() {
         // Public key sent to the server
         MessageType messageType = new MessageType();
         messageType.setType(MessageType.Type.SendKey);
-        messageType.setData(keys.getPublicKey());
+        messageType.setData(RSAKeys.getPublicKey());
         try {
             out.writeObject(messageType);
             out.flush();
@@ -61,7 +80,7 @@ public class Client {
             System.err.println("Can't send the public key");
             return false;
         }
-
         return true;
     }
+
 }

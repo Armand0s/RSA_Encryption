@@ -14,7 +14,7 @@ import java.security.SecureRandom;
  */
 public class RSA {
 
-    public Keys keys;
+    public RSAKeys RSAKeys;
 
     // Secure random to get a prime number
     private final SecureRandom random = new SecureRandom();
@@ -30,7 +30,7 @@ public class RSA {
 
     
     public RSA(int bitsLenght){
-        keys = new Keys();
+        RSAKeys = new RSAKeys();
         // get prime numbers
         p = BigInteger.probablePrime(bitsLenght, random);
         q = BigInteger.probablePrime(bitsLenght, random);
@@ -50,8 +50,8 @@ public class RSA {
         d = createD();
 
 
-        keys.setPublicKey(new RSAPublicKey(phi,e));
-        keys.setPrivateKey(new RSAPrivateKey(p,q));
+        RSAKeys.setPublicKey(new RSAPublicKey(phi,e));
+        RSAKeys.setPrivateKey(new RSAPrivateKey(p,q));
     }
 
     private BigInteger createN() {
@@ -122,8 +122,8 @@ public class RSA {
         return a;
     }
 
-    public Keys getKeys() {
-        return keys;
+    public RSAKeys getRSAKeys() {
+        return RSAKeys;
     }
 
     

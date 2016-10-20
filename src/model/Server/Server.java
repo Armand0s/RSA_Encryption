@@ -1,6 +1,8 @@
 package model.Server;
 
 import main.main;
+import model.Common.RSA;
+import model.Common.RSAKeys;
 import sun.awt.Mutex;
 
 import java.io.IOException;
@@ -20,12 +22,12 @@ public class Server {
     private int port;
 
     private int numNewClient = 1;
-
     private ArrayList<ThreadClient> clients;
-    private Mutex mutexMap;
+    private RSAKeys clientsRSAKeys;
 
     private boolean running = true;
 
+    private Mutex mutexMap;
     public Server(int port) {
         this.port = port;
         clients = new ArrayList<>();
@@ -102,6 +104,14 @@ public class Server {
     // TODO
     private boolean sendMessage(String message,ThreadClient client) {
         return false;
+    }
+
+    public RSAKeys getOrCreateKeyForClients() {
+        if (clients.size() == 1) { // room was empty, create new key
+            clientsRSAKeys = new RSA(1024).getRSAKeys();
+        }
+
+        return clientsRSAKeys;
     }
 
 

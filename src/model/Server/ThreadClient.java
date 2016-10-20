@@ -2,7 +2,7 @@ package model.Server;
 
 import main.main;
 import model.Common.MessageType;
-import model.Common.Keys;
+import model.Common.RSAKeys;
 import model.Common.RSAPublicKey;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class ThreadClient extends Thread{
     public int id;
     private String pseudo;
 
-    private Keys keys;
+    private RSAKeys RSAKeys;
     private MessageType message;
 
     private boolean running = true;
@@ -34,7 +34,7 @@ public class ThreadClient extends Thread{
         this.id = id;
         this.server = server;
         this.socket = socket;
-        keys = new Keys();
+        RSAKeys = new RSAKeys();
 
         try {
             in = new ObjectInputStream(socket.getInputStream());
@@ -75,14 +75,14 @@ public class ThreadClient extends Thread{
             try {
                 message = (MessageType) in.readObject();
             } catch (IOException e) {
-                main.logger.severe("Unable to get Object from client");
+                main.logger.severe("Unable to get Key from client");
                 return false;
             } catch (ClassNotFoundException e) {
-                main.logger.severe("Received object not recognized");
+                main.logger.severe("Received object not recognized from client");
                 return false;
             }
             if (message.getType() == MessageType.Type.SendKey){
-                keys.setPublicKey((RSAPublicKey) message.getData());
+                RSAKeys.setPublicKey((RSAPublicKey) message.getData());
                 keyReceived = true;
             }
         }
