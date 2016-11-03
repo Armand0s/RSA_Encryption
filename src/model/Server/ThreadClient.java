@@ -44,6 +44,7 @@ public class ThreadClient extends Thread{
 
         sendPublicKeyOfServer();
         receivePublicKeyOfClient();
+        sendFinalRSAkeysToClient();
 
         this.start();
 
@@ -55,17 +56,15 @@ public class ThreadClient extends Thread{
         messageType.setType(MessageType.Type.RSAPublicKey);
         messageType.setData(server.serverKeys.getPublicKey());
 
+        byte[] byteToSend;
         while (running) {
             try {
-                int size = in.readInt();
-                byte[] buffer = new byte[size];
-                buffer = RSA.decrypt(buffer, server.getOrCreateKeyForClients().getPrivateKey());
-                message = (MessageType)SerializableUtils.convertFromBytes(buffer);
+                byteToSend = SerializableUtils.convertToBytes(messageType);
+                out.writeInt(byteToSend.length);
+                out.write(byteToSend);
+                out.flush();
             } catch (IOException e) {
-                main.logger.severe("Unable to get Object from client");
-                break;
-            } catch (ClassNotFoundException e) {
-                main.logger.severe("Received object not recognized");
+                main.logger.severe("Unable to send Server Public Key to Client");
                 break;
             }
         }
@@ -80,7 +79,7 @@ public class ThreadClient extends Thread{
             in.read(arraybyte);
             message = (MessageType) SerializableUtils.convertFromBytes(arraybyte);
         } catch (IOException e) {
-            main.logger.severe("Unable to get Key from client");
+            main.logger.severe("Unable to get Public Key of client");
             return false;
         } catch (ClassNotFoundException e) {
             main.logger.severe("Received object not recognized from client");
@@ -91,6 +90,27 @@ public class ThreadClient extends Thread{
         }
         System.out.println(message.getType());
         main.logger.info("Client " + id + " : Client Public Key RECEIVED");
+        return true;
+    }
+
+
+    private boolean sendFinalRSAkeysToClient() {
+        MessageType messageType = new MessageType();
+        messageType.setType(MessageType.Type.RSAKeys);
+        messageType.setData(server.getOrCreateKeyForClients());
+
+        byte[] byteToSend;
+
+        try {
+            byteToSend = SerializableUtils.convertToBytes(messageType);
+            out.writeInt(byteToSend.length);
+            out.write(byteToSend);
+            out.flush();
+        } catch (IOException e) {
+            main.logger.severe("Unable to send Final Keys to Client");
+        }
+
+        main.logger.info("Client " + id + " : Final Keys SENT");
         return true;
     }
 

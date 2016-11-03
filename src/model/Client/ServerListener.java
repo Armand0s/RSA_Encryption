@@ -1,5 +1,9 @@
 package model.Client;
 
+import model.Common.MessageType;
+import model.Common.RSA;
+import model.Common.SerializableUtils;
+
 import java.io.IOException;
 
 /**
@@ -17,21 +21,29 @@ public class ServerListener extends Thread{
     public void run() {
 
         while(true) {
-            String message;
+            byte[] byteMessage;
+            MessageType messageType;
             try {
-                try {
-                     message = (String) client.in.readObject();
-                } catch (IOException e) {
-                    System.err.println("Server closed connection");
-                    message = "";
-                    break;
-                }
+                int sizeToReceive = client.in.readInt();
+                byteMessage = new byte[sizeToReceive];
+                client.in.read(byteMessage);
 
-                System.out.println(message);
-                System.out.println("> ");
+                messageType = (MessageType) SerializableUtils.convertFromBytes(RSA.decrypt(byteMessage,client.RSAKeys.getPrivateKey()));
+
+            } catch (IOException e) {
+                System.err.println("Server closed connection");
+                messageType = null;
+                break;
             } catch (ClassNotFoundException e) {
-
+                System.err.println("Unknown object received by server");
+                messageType = null;
+                break;
             }
+            if (messageType.getType() == MessageType.Type.Message) {
+                System.out.println((String) messageType.getData());
+                System.out.println("> ");
+            }
+
         }
 
     }
