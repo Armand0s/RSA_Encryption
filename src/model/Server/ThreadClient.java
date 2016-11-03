@@ -42,16 +42,18 @@ public class ThreadClient extends Thread{
             return;
         }
 
+        sendPublicKeyOfServer();
+        receivePublicKeyOfClient();
+
+        this.start();
+
     }
 
-    private boolean establishRSAkey() {
-        return false;
-    }
 
-    @Override
-    public void run() {
-
-        receivePublicKey();
+    private boolean sendPublicKeyOfServer() {
+        MessageType messageType = new MessageType();
+        messageType.setType(MessageType.Type.RSAPublicKey);
+        messageType.setData(server.serverKeys.getPublicKey());
 
         while (running) {
             try {
@@ -67,10 +69,11 @@ public class ThreadClient extends Thread{
                 break;
             }
         }
+
+        return true;
     }
 
-
-    private boolean receivePublicKey() {
+    private boolean receivePublicKeyOfClient() {
         boolean keyReceived = false;
         while (!keyReceived) {
             try {
@@ -88,5 +91,21 @@ public class ThreadClient extends Thread{
             }
         }
         return true;
+    }
+
+    @Override
+    public void run() {
+
+        while (running) {
+            try {
+                message = (MessageType) in.readObject();
+            } catch (IOException e) {
+                main.logger.severe("Unable to get Object from client");
+                break;
+            } catch (ClassNotFoundException e) {
+                main.logger.severe("Received object not recognized");
+                break;
+            }
+        }
     }
 }
