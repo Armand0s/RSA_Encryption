@@ -101,12 +101,14 @@ public class View extends ViewAbstract {
         panelChat.setVisible(false);
         panelConnect.setVisible(true);
         pack();
+        setLocationRelativeTo(null);
     }
 
     public void showChat(){
         panelConnect.setVisible(false);
         panelChat.setVisible(true);
         pack();
+        setLocationRelativeTo(null);
     }
 
     public void clearTextBox(){

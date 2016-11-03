@@ -1,8 +1,10 @@
 package model.Server;
 
 import main.main;
+import model.Common.MessageType;
 import model.Common.RSA;
 import model.Common.RSAKeys;
+import model.Common.SerializableUtils;
 import sun.awt.Mutex;
 
 import java.io.IOException;
@@ -103,6 +105,18 @@ public class Server {
     }
     // TODO
     private boolean sendMessage(String message,ThreadClient client) {
+        MessageType messageType = new MessageType();
+        messageType.setType(MessageType.Type.Message);
+        messageType.setData(message);
+        try {
+            byte[] messageRaw = SerializableUtils.convertToBytes(messageType);
+            byte[] messageEncrypted = RSA.encrypt(messageRaw, client.RSAKeys.getPublicKey());
+            client.out.writeInt(messageEncrypted.length);
+            client.out.write(messageEncrypted);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 

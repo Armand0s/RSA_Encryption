@@ -1,9 +1,7 @@
 package model.Server;
 
 import main.main;
-import model.Common.MessageType;
-import model.Common.RSAKeys;
-import model.Common.RSAPublicKey;
+import model.Common.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -23,7 +21,7 @@ public class ThreadClient extends Thread{
     public int id;
     private String pseudo;
 
-    private RSAKeys RSAKeys;
+    public RSAKeys RSAKeys;
     private MessageType message;
 
     private boolean running = true;
@@ -57,7 +55,10 @@ public class ThreadClient extends Thread{
 
         while (running) {
             try {
-                message = (MessageType) in.readObject();
+                int size = in.readInt();
+                byte[] buffer = new byte[size];
+                buffer = RSA.decrypt(buffer, server.getOrCreateKeyForClients().getPrivateKey());
+                message = (MessageType)SerializableUtils.convertFromBytes(buffer);
             } catch (IOException e) {
                 main.logger.severe("Unable to get Object from client");
                 break;
