@@ -25,7 +25,7 @@ public class Server {
     private ServerSocket serverSocket;
     private int port;
 
-    private int numNewClient = 1;
+    private int numNewClient = 0;
     private ArrayList<ThreadClient> clients;
     private RSAKeys clientsRSAKeys;
 

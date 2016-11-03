@@ -69,27 +69,28 @@ public class ThreadClient extends Thread{
                 break;
             }
         }
-
+        main.logger.info("Client " + id + " : Public Key SENT");
         return true;
     }
 
     private boolean receivePublicKeyOfClient() {
-        boolean keyReceived = false;
-        while (!keyReceived) {
-            try {
-                message = (MessageType) in.readObject();
-            } catch (IOException e) {
-                main.logger.severe("Unable to get Key from client");
-                return false;
-            } catch (ClassNotFoundException e) {
-                main.logger.severe("Received object not recognized from client");
-                return false;
-            }
-            if (message.getType() == MessageType.Type.RSAKeys){
-                RSAKeys.setPublicKey((RSAPublicKey) message.getData());
-                keyReceived = true;
-            }
+        try {
+            int sizeToReceive = in.readInt();
+            byte[] arraybyte = new byte[sizeToReceive];
+            in.read(arraybyte);
+            message = (MessageType) SerializableUtils.convertFromBytes(arraybyte);
+        } catch (IOException e) {
+            main.logger.severe("Unable to get Key from client");
+            return false;
+        } catch (ClassNotFoundException e) {
+            main.logger.severe("Received object not recognized from client");
+            return false;
         }
+        if (message.getType() == MessageType.Type.RSAKeys){
+            RSAKeys.setPublicKey((RSAPublicKey) message.getData());
+        }
+        System.out.println(message.getType());
+        main.logger.info("Client " + id + " : Client Public Key RECEIVED");
         return true;
     }
 

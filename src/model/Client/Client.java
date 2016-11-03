@@ -87,7 +87,6 @@ public class Client {
                 byte[] arraybyte = new byte[sizeToReceive];
                 in.read(arraybyte);
                 messageType = (MessageType) SerializableUtils.convertFromBytes(arraybyte);
-                System.out.println("Public Key of Server received  OK");
 
             } catch (IOException e) {
                 System.err.println("Unable to get Key from client");
@@ -101,6 +100,7 @@ public class Client {
                 publickeyReceived = true;
             }
         }
+        System.out.println("Public Key of Server received  OK");
         return true;
     }
 
@@ -110,13 +110,18 @@ public class Client {
         MessageType messageType = new MessageType();
         messageType.setType(MessageType.Type.RSAPublicKey);
         messageType.setData(RSAKeys.getPublicKey());
+
+        byte[] byteToSend;
         try {
-            out.writeObject(messageType);
+            byteToSend = SerializableUtils.convertToBytes(messageType);
+            out.writeInt(byteToSend.length);
+            out.write(byteToSend);
             out.flush();
         } catch (IOException e) {
             System.err.println("Can't send the public key");
             return false;
         }
+        System.out.println("Local public key sent OK");
         return true;
     }
 
@@ -126,10 +131,10 @@ public class Client {
         boolean keysReceived = false;
         while (!keysReceived) {
             try {
-
-                messageType = (MessageType) in.readObject();
-
-
+                int sizeToReceive = in.readInt();
+                byte[] byteToReceive = new byte[sizeToReceive];
+                in.read(byteToReceive);
+                messageType = (MessageType) SerializableUtils.convertFromBytes(model.Common.RSA.decrypt(byteToReceive,RSAKeysLocal.getPrivateKey()));
 
             } catch (IOException e) {
                 System.err.println("Unable to get Key from client");
