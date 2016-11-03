@@ -20,17 +20,19 @@ public class Client {
     public ObjectOutputStream out;
 
     private RSAKeys RSAKeys;
-    private RSAKeys tmpRSAKeys;
+    private RSAPublicKey RSAPublicKeyOfServer;
+    private RSAKeys RSAKeysLocal;
 
     public Client(String ipserver,int port, String pseudo) {
         this.ipserver = ipserver;
         this.port = port;
         this.pseudo = pseudo;
-        tmpRSAKeys = new RSA(1024).getRSAKeys();
+        RSAKeysLocal = new RSA(1024).getRSAKeys();
+        RSAKeys = new RSAKeys();
         run();
     }
 
-    private boolean run() {
+    private void run() {
 
         boolean resInit;
         resInit = initClient();
@@ -44,8 +46,9 @@ public class Client {
         boolean resReceiveFinalKeys;
         resReceiveFinalKeys = receiveFinalKeysFromServer();
 
-        new ServerListener(this).start();
-        return resInit && resSendKey && resReceiveFinalKeys;
+        if (resInit && resReceivePublicKeyOfServer && resSendKey && resReceiveFinalKeys)
+            new ServerListener(this).start();
+
     }
 
 
@@ -58,7 +61,7 @@ public class Client {
             System.err.println("Unable to connect to server IP:"+ipserver+"/"+port);
             return false;
         }
-        System.out.println("Connected to server IP:" + ipserver + "/" + port);
+        System.out.println("Connected to server " + ipserver + "/" + port);
 
         try {
             out = new ObjectOutputStream(socket.getOutputStream());
@@ -68,8 +71,6 @@ public class Client {
             return false;
         }
 
-
-
         return true;
     }
 
@@ -78,8 +79,16 @@ public class Client {
         boolean publickeyReceived = false;
         while (!publickeyReceived) {
             try {
+                /*
                 byte[] arraybyte = SerializableUtils.readUnknownByteArrayLenght(in);
                 messageType = (MessageType) SerializableUtils.convertFromBytes(arraybyte);
+                */
+                int sizeToReceive = in.readInt();
+                byte[] arraybyte = new byte[sizeToReceive];
+                in.read(arraybyte);
+                messageType = (MessageType) SerializableUtils.convertFromBytes(arraybyte);
+                System.out.println("Public Key of Server received  OK");
+
             } catch (IOException e) {
                 System.err.println("Unable to get Key from client");
                 return false;
@@ -87,8 +96,8 @@ public class Client {
                 System.err.println("Received object not recognized from client");
                 return false;
             }
-            if (messageType.getType() == MessageType.Type.RSAKeys){
-                RSAKeys = (RSAKeys) messageType.getData();
+            if (messageType.getType() == MessageType.Type.RSAPublicKey){
+                RSAPublicKeyOfServer = (RSAPublicKey) messageType.getData();
                 publickeyReceived = true;
             }
         }

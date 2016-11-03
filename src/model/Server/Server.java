@@ -16,6 +16,8 @@ import java.util.logging.Logger;
  */
 public class Server {
 
+    public static final int RSA_BYTE_LENGTH = 1024;
+
     private Logger logfile = main.logger;
 
     private ServerSocket serverSocket;
@@ -28,6 +30,10 @@ public class Server {
     private boolean running = true;
 
     private Mutex mutexMap;
+
+    public RSAKeys serverKeys;
+
+
     public Server(int port) {
         this.port = port;
         clients = new ArrayList<>();
@@ -37,6 +43,8 @@ public class Server {
             logfile.severe("Unable to create the server, exiting");
         }
         mutexMap = new Mutex();
+
+        serverKeys = new RSA(RSA_BYTE_LENGTH).getRSAKeys();
 
         run();
     }
@@ -51,18 +59,18 @@ public class Server {
             // Waiting for client
             try {
                 newClientSocket = serverSocket.accept();
+                logfile.info("New client connected");
             } catch (IOException ioException) {
                 newClientSocket = null;
                 logfile.severe("Unable to accept client on server, exiting");
             }
             // A new client is arrived, add this client to the list
-            ThreadClient newClient = new ThreadClient(newClientSocket,this,++numNewClient);
+            ThreadClient newClient = new ThreadClient(newClientSocket, this, ++numNewClient);
             mutexMap.lock();
                 clients.add(newClient);
             mutexMap.unlock();
-            // Start the client
-            newClient.start();
-        } // out when running raised : server will be closed
+            // out when running raised : server will be closed
+        }
 
         // close server and each client thread
         try {

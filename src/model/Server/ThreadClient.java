@@ -4,6 +4,7 @@ import main.main;
 import model.Common.MessageType;
 import model.Common.RSAKeys;
 import model.Common.RSAPublicKey;
+import model.Common.SerializableUtils;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -44,32 +45,34 @@ public class ThreadClient extends Thread{
             return;
         }
 
+        sendPublicKeyOfServer();
+        receivePublicKeyOfClient();
+
+        this.start();
+
     }
 
-    private boolean establishRSAkey() {
-        return false;
-    }
 
-    @Override
-    public void run() {
+    private boolean sendPublicKeyOfServer() {
+        MessageType messageType = new MessageType();
+        messageType.setType(MessageType.Type.RSAPublicKey);
+        messageType.setData(server.serverKeys.getPublicKey());
 
-        receivePublicKey();
-
-        while (running) {
-            try {
-                message = (MessageType) in.readObject();
-            } catch (IOException e) {
-                main.logger.severe("Unable to get Object from client");
-                break;
-            } catch (ClassNotFoundException e) {
-                main.logger.severe("Received object not recognized");
-                break;
-            }
+        byte[] byteToSend;
+        try {
+            byteToSend = SerializableUtils.convertToBytes(messageType);
+            out.writeInt(byteToSend.length);
+            out.write(byteToSend);
+            out.flush();
+        } catch (IOException e) {
+            main.logger.severe("Error client " + id + " Unable to serialize/send public Key of server");
+            return false;
         }
+
+        return true;
     }
 
-
-    private boolean receivePublicKey() {
+    private boolean receivePublicKeyOfClient() {
         boolean keyReceived = false;
         while (!keyReceived) {
             try {
@@ -87,5 +90,21 @@ public class ThreadClient extends Thread{
             }
         }
         return true;
+    }
+
+    @Override
+    public void run() {
+
+        while (running) {
+            try {
+                message = (MessageType) in.readObject();
+            } catch (IOException e) {
+                main.logger.severe("Unable to get Object from client");
+                break;
+            } catch (ClassNotFoundException e) {
+                main.logger.severe("Received object not recognized");
+                break;
+            }
+        }
     }
 }
