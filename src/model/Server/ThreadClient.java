@@ -19,10 +19,10 @@ public class ThreadClient extends Thread{
 
     public Server server;
     public int id;
-    private String pseudo;
+    public String pseudo;
 
     public RSAKeys RSAKeys;
-    private MessageType message;
+    //private MessageType message;
 
     private boolean running = true;
 
@@ -45,6 +45,7 @@ public class ThreadClient extends Thread{
         sendPublicKeyOfServer();
         receivePublicKeyOfClient();
         sendFinalRSAkeysToClient();
+        receivePseudoFromClient();
 
         this.start();
 
@@ -73,11 +74,12 @@ public class ThreadClient extends Thread{
     }
 
     private boolean receivePublicKeyOfClient() {
+        MessageType messageType;
         try {
             int sizeToReceive = in.readInt();
             byte[] arraybyte = new byte[sizeToReceive];
             in.read(arraybyte);
-            message = (MessageType) SerializableUtils.convertFromBytes(arraybyte);
+            messageType = (MessageType) SerializableUtils.convertFromBytes(arraybyte);
         } catch (IOException e) {
             main.logger.severe("Unable to get Public Key of client");
             return false;
@@ -85,10 +87,9 @@ public class ThreadClient extends Thread{
             main.logger.severe("Received object not recognized from client");
             return false;
         }
-        if (message.getType() == MessageType.Type.RSAKeys){
-            RSAKeys.setPublicKey((RSAPublicKey) message.getData());
+        if (messageType.getType() == MessageType.Type.RSAKeys){
+            RSAKeys.setPublicKey((RSAPublicKey) messageType.getData());
         }
-        System.out.println(message.getType());
         main.logger.info("Client " + id + " : Client Public Key RECEIVED");
         return true;
     }
@@ -114,12 +115,43 @@ public class ThreadClient extends Thread{
         return true;
     }
 
+    private boolean receivePseudoFromClient() {
+        MessageType messageType;
+        try {
+            int sizeToReceive = in.readInt();
+            byte[] arraybyte = new byte[sizeToReceive];
+            in.read(arraybyte);
+            messageType = (MessageType) RSA.decryptObject(arraybyte,server.serverKeys.getPrivateKey());
+        } catch (IOException e) {
+            main.logger.severe("Unable to get Public Key of client");
+            return false;
+        } catch (ClassNotFoundException e) {
+            main.logger.severe("Received object not recognized from client");
+            return false;
+        }
+        if (messageType.getType() == MessageType.Type.Pseudo){
+            this.pseudo = (String) messageType.getData();
+        }
+        main.logger.info("Client " + id + " : Pseudo RECEIVED");
+        return true;
+    }
+
     @Override
     public void run() {
 
         while (running) {
+            int sizeToReceive;
+            byte[] bytearray;
+            MessageType messageType;
             try {
-                message = (MessageType) in.readObject();
+
+                sizeToReceive = in.readInt();
+                bytearray = new byte[sizeToReceive];
+                in.read(bytearray);
+                messageType = (MessageType) RSA.decryptObject(bytearray,server.serverKeys.getPrivateKey());
+
+                server.analyseMessage(messageType,this);
+
             } catch (IOException e) {
                 main.logger.severe("Unable to get Object from client");
                 break;

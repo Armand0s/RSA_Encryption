@@ -46,7 +46,10 @@ public class Client {
         boolean resReceiveFinalKeys;
         resReceiveFinalKeys = receiveFinalKeysFromServer();
 
-        if (resInit && resReceivePublicKeyOfServer && resSendKey && resReceiveFinalKeys)
+        boolean resSendPseudo;
+        resSendPseudo = sendPseudoToServer();
+
+        if (resInit && resReceivePublicKeyOfServer && resSendKey && resReceiveFinalKeys && resSendPseudo)
             new ServerListener(this).start();
 
     }
@@ -122,12 +125,11 @@ public class Client {
 
     private boolean receiveFinalKeysFromServer() {
         MessageType messageType;
-        boolean keysReceived = false;
         try {
             int sizeToReceive = in.readInt();
             byte[] byteToReceive = new byte[sizeToReceive];
             in.read(byteToReceive);
-            messageType = (MessageType) SerializableUtils.convertFromBytes(model.Common.RSA.decrypt(byteToReceive,RSAKeysLocal.getPrivateKey()));
+            messageType = (MessageType) RSA.decryptObject(byteToReceive,RSAKeysLocal.getPrivateKey());
 
         } catch (IOException e) {
             System.err.println("Unable to get Key from client");
@@ -138,21 +140,18 @@ public class Client {
         }
         if (messageType.getType() == MessageType.Type.RSAKeys){
             RSAKeys = (RSAKeys) messageType.getData();
-            keysReceived = true;
         }
         return true;
     }
 
-    private boolean sendPseudoToServer() throws IOException{
-        byte[] messageTypeByteArray;
+    private boolean sendPseudoToServer() {
         byte[] messageTypeByteArrayEncrypted;
 
         MessageType messageType = new MessageType();
         messageType.setType(MessageType.Type.Pseudo);
         messageType.setData(pseudo);
         try {
-            messageTypeByteArray = SerializableUtils.convertToBytes(messageType);
-            messageTypeByteArrayEncrypted = RSA.encrypt(messageTypeByteArray,RSAKeys.getPublicKey());
+            messageTypeByteArrayEncrypted = RSA.encryptObject(messageType,RSAKeys.getPublicKey());
             out.writeInt(messageTypeByteArrayEncrypted.length);
             out.write(messageTypeByteArrayEncrypted);
             out.flush();

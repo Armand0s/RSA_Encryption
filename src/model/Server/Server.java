@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 
 /**
@@ -117,8 +118,7 @@ public class Server {
         messageType.setType(MessageType.Type.Message);
         messageType.setData(message);
         try {
-            byte[] messageRaw = SerializableUtils.convertToBytes(messageType);
-            byte[] messageEncrypted = RSA.encrypt(messageRaw, client.RSAKeys.getPublicKey());
+            byte[] messageEncrypted = RSA.encryptObject(messageType, client.RSAKeys.getPublicKey());
             client.out.writeInt(messageEncrypted.length);
             client.out.write(messageEncrypted);
             return true;
@@ -134,6 +134,21 @@ public class Server {
         }
 
         return clientsRSAKeys;
+    }
+
+
+    public void analyseMessage(MessageType messageType, ThreadClient threadClient) {
+        if (messageType == null)
+            return;
+
+        switch (messageType.getType()) {
+            case Message:
+                String message = (String) messageType.getData();
+                this.broadcast(message);
+                break;
+            default:
+                main.logger.severe("Message send by client " + threadClient.id + " : " + threadClient.pseudo + " not recognized");
+        }
     }
 
 

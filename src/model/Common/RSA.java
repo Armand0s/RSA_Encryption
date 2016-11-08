@@ -5,6 +5,7 @@
  */
 package model.Common;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
@@ -147,5 +148,14 @@ public class RSA {
     public static synchronized byte[] encrypt(byte[] byteArray, RSAPublicKey publicKey) {
         return new BigInteger(byteArray).modPow(publicKey.getE(), publicKey.getN()).toByteArray();
     }
+
+    public static synchronized Object decryptObject(byte[] byteArray, RSAPrivateKey privateKey) throws IOException, ClassNotFoundException{
+        return SerializableUtils.convertFromBytes(decrypt(byteArray,privateKey));
+    }
+
+    public static synchronized byte[] encryptObject(Object object, RSAPublicKey publicKey) throws IOException{
+        return encrypt(SerializableUtils.convertToBytes(object),publicKey);
+    }
+
 
 }

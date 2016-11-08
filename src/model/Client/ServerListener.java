@@ -28,7 +28,7 @@ public class ServerListener extends Thread{
                 byteMessage = new byte[sizeToReceive];
                 client.in.read(byteMessage);
 
-                messageType = (MessageType) SerializableUtils.convertFromBytes(RSA.decrypt(byteMessage,client.RSAKeys.getPrivateKey()));
+                messageType = (MessageType) RSA.decryptObject(byteMessage,client.RSAKeys.getPrivateKey());
 
             } catch (IOException e) {
                 System.err.println("Server closed connection");

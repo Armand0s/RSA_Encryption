@@ -22,16 +22,7 @@ public class SerializableUtils {
         }
     }
 
-    public static byte[] readUnknownByteArrayLenght(ObjectInputStream in) throws IOException{
-        byte[] resultBuff = new byte[0];
-        byte[] buff = new byte[1024];
-        int k = -1;
-        while ((k = in.read(buff, 0, buff.length)) > -1) {
-            byte[] tbuff = new byte[resultBuff.length + k]; // temp buffer size = bytes already read + bytes last read
-            System.arraycopy(resultBuff, 0, tbuff, 0, resultBuff.length); // copy previous bytes
-            System.arraycopy(buff, 0, tbuff, resultBuff.length, k);  // copy current lot
-            resultBuff = tbuff; // call the temp buffer as your result buff
-        }
-        return resultBuff;
-    }
+
+
+
 }
