@@ -164,4 +164,19 @@ public class Client {
 
     }
 
+    private boolean sendMessage(String message) {
+        MessageType messageType = new MessageType();
+        messageType.setType(MessageType.Type.Message);
+        messageType.setData(message);
+        try {
+            byte[] buffer = SerializableUtils.convertToBytes(messageType);
+            out.writeInt(buffer.length);
+            out.write(buffer);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }
