@@ -79,7 +79,6 @@ public class Client {
 
     private boolean receiveRSAPublicKeyOfServer() {
         MessageType messageType;
-        boolean publickeyReceived = false;
         try {
             int sizeToReceive = in.readInt();
             byte[] arraybyte = new byte[sizeToReceive];
@@ -95,10 +94,11 @@ public class Client {
         }
         if (messageType.getType() == MessageType.Type.RSAPublicKey){
             RSAPublicKeyOfServer = (RSAPublicKey) messageType.getData();
-            publickeyReceived = true;
+            System.out.println("Public Key of Server received  OK");
+            return true;
+
         }
-        System.out.println("Public Key of Server received  OK");
-        return true;
+        return false;
     }
 
 
@@ -106,7 +106,7 @@ public class Client {
         // Public key sent to the server
         MessageType messageType = new MessageType();
         messageType.setType(MessageType.Type.RSAPublicKey);
-        messageType.setData(RSAKeys.getPublicKey());
+        messageType.setData(RSAKeysLocal.getPublicKey());
 
         byte[] byteToSend;
         try {
@@ -127,12 +127,15 @@ public class Client {
         MessageType messageType;
         try {
             int sizeToReceive = in.readInt();
-            byte[] byteToReceive = new byte[sizeToReceive];
-            in.read(byteToReceive);
-            messageType = (MessageType) RSA.decryptObject(byteToReceive,RSAKeysLocal.getPrivateKey());
-
+            byte[] byteToReceiveEncrypted = new byte[sizeToReceive];
+            byte[] byteToReceiveDecrypted;
+            in.read(byteToReceiveEncrypted);
+            //messageType = (MessageType) RSA.decryptObject(byteToReceive,RSAKeysLocal.getPrivateKey());
+            byteToReceiveDecrypted = RSA.decrypt(byteToReceiveEncrypted,RSAKeysLocal.getPrivateKey());
+            messageType = (MessageType) SerializableUtils.convertFromBytes(byteToReceiveDecrypted);
         } catch (IOException e) {
             System.err.println("Unable to get Key from client");
+            e.printStackTrace();
             return false;
         } catch (ClassNotFoundException e) {
             System.err.println("Received object not recognized from client");
@@ -141,6 +144,7 @@ public class Client {
         if (messageType.getType() == MessageType.Type.RSAKeys){
             RSAKeys = (RSAKeys) messageType.getData();
         }
+        System.out.println("Final keys received OK");
         return true;
     }
 

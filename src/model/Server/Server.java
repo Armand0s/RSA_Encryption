@@ -28,13 +28,13 @@ public class Server {
 
     private int numNewClient = 0;
     private ArrayList<ThreadClient> clients;
-    private RSAKeys clientsRSAKeys;
 
     private boolean running = true;
 
     private Mutex mutexMap;
 
     public RSAKeys serverKeys;
+    public RSAKeys clientsRSAKeys;
 
 
     public Server(int port) {
@@ -48,6 +48,7 @@ public class Server {
         mutexMap = new Mutex();
 
         serverKeys = new RSA(RSA_BYTE_LENGTH).getRSAKeys();
+        clientsRSAKeys = new RSA(RSA_BYTE_LENGTH).getRSAKeys();
 
         run();
     }
@@ -118,7 +119,7 @@ public class Server {
         messageType.setType(MessageType.Type.Message);
         messageType.setData(message);
         try {
-            byte[] messageEncrypted = RSA.encryptObject(messageType, client.RSAKeys.getPublicKey());
+            byte[] messageEncrypted = RSA.encryptObject(messageType, getOrCreateKeyForClients().getPublicKey());
             client.out.writeInt(messageEncrypted.length);
             client.out.write(messageEncrypted);
             return true;
@@ -129,10 +130,6 @@ public class Server {
     }
 
     public RSAKeys getOrCreateKeyForClients() {
-        if (clients.size() == 1) { // room was empty, create new key
-            clientsRSAKeys = new RSA(1024).getRSAKeys();
-        }
-
         return clientsRSAKeys;
     }
 

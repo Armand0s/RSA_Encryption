@@ -3,9 +3,7 @@ package model.Server;
 import main.main;
 import model.Common.*;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 
 /**
@@ -21,7 +19,7 @@ public class ThreadClient extends Thread{
     public int id;
     public String pseudo;
 
-    public RSAKeys RSAKeys;
+    public RSAPublicKey RSAClientLocalKey;
     //private MessageType message;
 
     private boolean running = true;
@@ -32,7 +30,6 @@ public class ThreadClient extends Thread{
         this.id = id;
         this.server = server;
         this.socket = socket;
-        RSAKeys = new RSAKeys();
 
         try {
             in = new ObjectInputStream(socket.getInputStream());
@@ -58,17 +55,15 @@ public class ThreadClient extends Thread{
         messageType.setData(server.serverKeys.getPublicKey());
 
         byte[] byteToSend;
-        while (running) {
-            try {
-                byteToSend = SerializableUtils.convertToBytes(messageType);
-                out.writeInt(byteToSend.length);
-                out.write(byteToSend);
-                out.flush();
-            } catch (IOException e) {
-                main.logger.severe("Unable to send Server Public Key to Client");
-                break;
-            }
+        try {
+            byteToSend = SerializableUtils.convertToBytes(messageType);
+            out.writeInt(byteToSend.length);
+            out.write(byteToSend);
+            out.flush();
+        } catch (IOException e) {
+            main.logger.severe("Unable to send Server Public Key to Client");
         }
+
         main.logger.info("Client " + id + " : Public Key SENT");
         return true;
     }
@@ -87,30 +82,34 @@ public class ThreadClient extends Thread{
             main.logger.severe("Received object not recognized from client");
             return false;
         }
-        if (messageType.getType() == MessageType.Type.RSAKeys){
-            RSAKeys.setPublicKey((RSAPublicKey) messageType.getData());
+        if (messageType.getType() == MessageType.Type.RSAPublicKey){
+            RSAClientLocalKey =(RSAPublicKey) messageType.getData();
+            main.logger.info("Client " + id + " : Client Public Key RECEIVED");
+            return true;
         }
-        main.logger.info("Client " + id + " : Client Public Key RECEIVED");
-        return true;
+        main.logger.severe("Client " + id + " : Client Public Key NOT RECEIVED");
+        return false;
+
     }
 
 
     private boolean sendFinalRSAkeysToClient() {
         MessageType messageType = new MessageType();
         messageType.setType(MessageType.Type.RSAKeys);
-        messageType.setData(server.getOrCreateKeyForClients());
+        messageType.setData(server.clientsRSAKeys);
 
-        byte[] byteToSend;
-
+        byte[] byteToSendDecrypted;
+        byte[] byteToSendEncrypted;
         try {
-            byteToSend = SerializableUtils.convertToBytes(messageType);
-            out.writeInt(byteToSend.length);
-            out.write(byteToSend);
+            byteToSendDecrypted = SerializableUtils.convertToBytes(messageType);
+            byteToSendEncrypted = RSA.encrypt(byteToSendDecrypted,RSAClientLocalKey);
+            out.writeInt(byteToSendEncrypted.length);
+            out.flush();
+            out.write(byteToSendEncrypted);
             out.flush();
         } catch (IOException e) {
-            main.logger.severe("Unable to send Final Keys to Client");
+            main.logger.severe("Client " + id + " : Unable to send Final Keys to Client");
         }
-
         main.logger.info("Client " + id + " : Final Keys SENT");
         return true;
     }
@@ -121,7 +120,7 @@ public class ThreadClient extends Thread{
             int sizeToReceive = in.readInt();
             byte[] arraybyte = new byte[sizeToReceive];
             in.read(arraybyte);
-            messageType = (MessageType) RSA.decryptObject(arraybyte,server.serverKeys.getPrivateKey());
+            messageType = (MessageType) RSA.decryptObject(arraybyte,server.getOrCreateKeyForClients().getPrivateKey());
         } catch (IOException e) {
             main.logger.severe("Unable to get Public Key of client");
             return false;

@@ -8,14 +8,14 @@ import java.math.BigInteger;
  */
 public class RSAPrivateKey implements Serializable{
 
-    private BigInteger d;
     private BigInteger n;
+    private BigInteger d;
 
-    ////////// format (d,n) //////////
+    ////////// format (n,d) //////////
 
-    public RSAPrivateKey(BigInteger d, BigInteger n) {
-        this.d = d;
+    public RSAPrivateKey(BigInteger n, BigInteger d) {
         this.n = n;
+        this.d = d;
     }
 
     public BigInteger getD() {
@@ -36,6 +36,6 @@ public class RSAPrivateKey implements Serializable{
 
     @Override
     public String toString() {
-        return  "d : " + d.toString() + "\nn : " + n.toString();
+        return  "n : " + n + "\nd : " + d;
     }
 }

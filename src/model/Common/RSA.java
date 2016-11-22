@@ -51,8 +51,8 @@ public class RSA {
         d = createD();
 
 
-        RSAKeys.setPublicKey(new RSAPublicKey(phi,e));
-        RSAKeys.setPrivateKey(new RSAPrivateKey(p,q));
+        RSAKeys.setPublicKey(new RSAPublicKey(n,e));
+        RSAKeys.setPrivateKey(new RSAPrivateKey(n,d));
     }
 
     private BigInteger createN() {
@@ -78,7 +78,18 @@ public class RSA {
     }
 
     private BigInteger createD() {
-        return modInv(e,phi);
+
+        BigInteger minPQ ;
+        minPQ = (p.compareTo(q) < 0) ? p : q;
+        BigInteger dTmp = ((p.add(q)).divide(new BigInteger("2"))).add(minPQ);
+        BigInteger counter = new BigInteger("1");
+        BigInteger resultPGDC;
+        do {
+            resultPGDC = ((minPQ.add(counter)).multiply(e)).mod(phi);
+            counter = counter.add(new BigInteger("1"));
+        } while (resultPGDC != BigInteger.ONE);
+        return minPQ.add(counter).subtract(new BigInteger("1"));
+        //return modInv(e,phi);
     }
 
     private BigInteger modInv(BigInteger _e,BigInteger _phi) {
@@ -112,32 +123,21 @@ public class RSA {
     }
 
 
-
-    private BigInteger gcd(BigInteger a,BigInteger b) {
-        BigInteger r;
-        while (b.compareTo(BigInteger.ZERO) == 1) { // while  b > 0
-            r = a.mod(b);
-            a = b;
-            b = r;
-        }
-        return a;
-    }
-
     public RSAKeys getRSAKeys() {
         return RSAKeys;
     }
 
     
     public String toString() {
-        String ret = "p           : " + p.toString() + "\n"
-                + "q           : " + q.toString() + "\n"
-                + "n           : " + n.toString() + "\n"
-                + "d           : " + d.toString() + "\n"
-                + "phi         : " + phi.toString() + "\n"
-                + "e           : " + e.toString() + "\n"
-                + "public Key  : (" + phi.toString() + "," + e.toString()+")\n"
-                + "private Key : (" + d.toString() + "," + n.toString() + ")\n"
-                + "bit lenght  : " + p.bitLength() + "\n";
+        String ret = "p                : " + p + "\n"
+                + "q               : " + q + "\n"
+                + "n               : " + n + "\n"
+                + "d               : " + d + "\n"
+                + "phi             : " + phi + "\n"
+                + "e               : " + e + "\n"
+                + "public Key      : (" + phi + "," + e +")\n"
+                + "private Key     : (" + d + "," + n + ")\n"
+                + "bit lenght      : " + p.bitLength() + "\n";
         return ret;
     }
 
