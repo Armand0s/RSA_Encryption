@@ -26,6 +26,7 @@ public class RSATest {
         keys = rsa.getRSAKeys();
         Assert.assertTrue(keys.getPublicKey().getE().compareTo(keys.getPublicKey().getN()) < 0);
         Assert.assertEquals(rsa.getP().multiply(rsa.getQ()), keys.getPublicKey().getN());
+        Assert.assertEquals(rsa.getP().subtract(BigInteger.ONE).multiply(rsa.getQ().subtract(BigInteger.ONE)), rsa.getPhi());
 
         Assert.assertEquals(rsa.getP().multiply(rsa.getQ()), keys.getPrivateKey().getN());
         Assert.assertEquals(new BigInteger("1"), keys.getPrivateKey().getD().multiply(rsa.getE()).mod(rsa.getPhi()));
@@ -33,11 +34,12 @@ public class RSATest {
 
     @Test
     public void testDecrypt() throws Exception {
-        RSA rsa = new RSA(new BigInteger("23"), new BigInteger("13"));
+        RSA rsa = new RSA(new BigInteger("5"), new BigInteger("37"));
         RSAKeys keys = rsa.getRSAKeys();
-        BigInteger raw = new BigInteger("12345678901234567890123456789");
+        BigInteger raw = new BigInteger("8");
         System.out.println(raw.toString());
         BigInteger encrypted = RSA.encrypt(raw, keys.getPublicKey());
+        System.out.println(encrypted.toString());
         BigInteger decrypted = RSA.decrypt(encrypted, keys.getPrivateKey());
         System.out.println(decrypted.toString());
         Assert.assertTrue(raw.equals(decrypted));
