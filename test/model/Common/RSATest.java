@@ -35,10 +35,12 @@ public class RSATest {
     public void testDecrypt() throws Exception {
         RSA rsa = new RSA(new BigInteger("23"), new BigInteger("13"));
         RSAKeys keys = rsa.getRSAKeys();
-        byte[] array = {0, 1, 2, 3 ,4 , 5, 6, 7, 8, 9, 10};
-        byte[] encrypted = RSA.encrypt(array, keys.getPublicKey());
-        byte[] decrypted = RSA.decrypt(encrypted, keys.getPrivateKey());
-        Assert.assertArrayEquals(array, decrypted);
+        BigInteger raw = new BigInteger("12345678901234567890123456789");
+        System.out.println(raw.toString());
+        BigInteger encrypted = RSA.encrypt(raw, keys.getPublicKey());
+        BigInteger decrypted = RSA.decrypt(encrypted, keys.getPrivateKey());
+        System.out.println(decrypted.toString());
+        Assert.assertTrue(raw.equals(decrypted));
     }
 
     @Test

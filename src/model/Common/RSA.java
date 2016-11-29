@@ -95,7 +95,7 @@ public class RSA {
 
     private BigInteger createD() {
 
-        BigInteger minPQ ;
+        /*BigInteger minPQ ;
         minPQ = (p.compareTo(q) < 0) ? p : q;
         BigInteger dTmp = ((p.add(q)).divide(new BigInteger("2"))).add(minPQ);
         BigInteger counter = new BigInteger("1");
@@ -103,9 +103,10 @@ public class RSA {
         do {
             resultPGDC = ((minPQ.add(counter)).multiply(e)).mod(phi);
             counter = counter.add(new BigInteger("1"));
-        } while (!resultPGDC.equals(BigInteger.ONE));
-        return minPQ.add(counter).subtract(new BigInteger("1"));
+        } while (resultPGDC.equals(BigInteger.ONE));
+        return minPQ.add(counter).subtract(new BigInteger("1"));*/
         //return modInv(e,phi);
+        return e.modInverse(phi);
     }
 
     private BigInteger modInv(BigInteger _e,BigInteger _phi) {
@@ -158,11 +159,25 @@ public class RSA {
     }
 
     public static synchronized byte[] decrypt(byte[] byteArray, RSAPrivateKey privateKey) {
-        return new BigInteger(byteArray).modPow(privateKey.getD(), privateKey.getN()).toByteArray();
+        BigInteger bigInteger = new BigInteger(byteArray);
+        BigInteger bigIntegerDecrypted = bigInteger.modPow(privateKey.getD(), privateKey.getN());
+        return bigIntegerDecrypted.toByteArray();
+    }
+
+    public static synchronized BigInteger encrypt(BigInteger bigInteger, RSAPublicKey publicKey) {
+        BigInteger bigIntegerEncrypted = bigInteger.modPow(publicKey.getE(), publicKey.getN());
+        return bigIntegerEncrypted;
+    }
+
+    public static synchronized BigInteger decrypt(BigInteger bigInteger, RSAPrivateKey privateKey) {
+        BigInteger bigIntegerDecrypted = bigInteger.modPow(privateKey.getD(), privateKey.getN());
+        return bigIntegerDecrypted;
     }
 
     public static synchronized byte[] encrypt(byte[] byteArray, RSAPublicKey publicKey) {
-        return new BigInteger(byteArray).modPow(publicKey.getE(), publicKey.getN()).toByteArray();
+        BigInteger bigInteger = new BigInteger(byteArray);
+        BigInteger bigIntegerEncrypted = bigInteger.modPow(publicKey.getE(), publicKey.getN());
+        return bigIntegerEncrypted.toByteArray();
     }
 
     public static synchronized Object decryptObject(byte[] byteArray, RSAPrivateKey privateKey) throws IOException, ClassNotFoundException{

@@ -29,6 +29,7 @@ public class Client {
         this.pseudo = pseudo;
         RSAKeysLocal = new RSA(1024).getRSAKeys();
         RSAKeys = new RSAKeys();
+        System.out.println(RSAKeysLocal);
         run();
     }
 

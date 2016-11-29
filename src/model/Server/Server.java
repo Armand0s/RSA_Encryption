@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class Server {
 
-    public static final int RSA_BYTE_LENGTH = 1024;
+    public static final int RSA_BYTE_LENGTH = 128;
 
     private Logger logfile = main.logger;
 
