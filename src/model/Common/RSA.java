@@ -79,7 +79,7 @@ public class RSA {
 
     private BigInteger createD() {
 
-        BigInteger minPQ ;
+        /*BigInteger minPQ ;
         minPQ = (p.compareTo(q) < 0) ? p : q;
         BigInteger dTmp = ((p.add(q)).divide(new BigInteger("2"))).add(minPQ);
         BigInteger counter = new BigInteger("1");
@@ -87,9 +87,10 @@ public class RSA {
         do {
             resultPGDC = ((minPQ.add(counter)).multiply(e)).mod(phi);
             counter = counter.add(new BigInteger("1"));
-        } while (resultPGDC != BigInteger.ONE);
-        return minPQ.add(counter).subtract(new BigInteger("1"));
+        } while (resultPGDC.equals(BigInteger.ONE));
+        return minPQ.add(counter).subtract(new BigInteger("1"));*/
         //return modInv(e,phi);
+        return e.modInverse(phi);
     }
 
     private BigInteger modInv(BigInteger _e,BigInteger _phi) {

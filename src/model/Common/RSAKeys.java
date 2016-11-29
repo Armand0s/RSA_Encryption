@@ -33,4 +33,11 @@ public class RSAKeys implements Serializable{
     public void setPublicKey(RSAPublicKey publicKey) {
         this.publicKey = publicKey;
     }
+
+    @Override
+    public String toString() {
+        return "RSAKeys{\n" +
+                "privateKey\n" + privateKey +
+                "\npublicKey\n" + publicKey;
+    }
 }
