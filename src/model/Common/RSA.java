@@ -39,6 +39,7 @@ public class RSA {
     }
     
     public RSA(BigInteger p, BigInteger q) {
+        RSAKeys = new RSAKeys();
         this.p = p;
         this.q = q;
         createKeys();
@@ -50,9 +51,16 @@ public class RSA {
         e = createE();
         d = createD();
 
-
-        RSAKeys.setPublicKey(new RSAPublicKey(n,e));
+        RSAKeys.setPublicKey(new RSAPublicKey(n, e));
         RSAKeys.setPrivateKey(new RSAPrivateKey(n,d));
+    }
+
+    public BigInteger getP() {
+        return p;
+    }
+
+    public BigInteger getQ() {
+        return q;
     }
 
     private BigInteger createN() {
@@ -69,12 +77,20 @@ public class RSA {
         }
         return tmpE.subtract(BigInteger.ONE);
     }
+
+    public BigInteger getE(){
+        return e;
+    }
     
     private BigInteger createPhi() {
             return (
                     p.subtract(BigInteger.ONE)
                             .multiply(p.subtract(BigInteger.ONE))
             );
+    }
+
+    public BigInteger getPhi() {
+        return phi;
     }
 
     private BigInteger createD() {
@@ -87,7 +103,7 @@ public class RSA {
         do {
             resultPGDC = ((minPQ.add(counter)).multiply(e)).mod(phi);
             counter = counter.add(new BigInteger("1"));
-        } while (resultPGDC != BigInteger.ONE);
+        } while (!resultPGDC.equals(BigInteger.ONE));
         return minPQ.add(counter).subtract(new BigInteger("1"));
         //return modInv(e,phi);
     }

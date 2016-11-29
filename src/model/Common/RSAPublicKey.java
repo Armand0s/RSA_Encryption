@@ -36,7 +36,7 @@ public class RSAPublicKey implements Serializable{
 
     @Override
     public String toString() {
-        return  "n   = " + e + "\n" +
+        return  "n   = " + n + "\n" +
                 "e   = " + e;
     }
 }
