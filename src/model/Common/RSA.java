@@ -69,12 +69,10 @@ public class RSA {
 
     private BigInteger createE() {
         BigInteger tmpE = (p.compareTo(q) < 0) ? q.add(new BigInteger("1")) : p.add(new BigInteger("1")) ; // max (p,q) +1
-        BigInteger resultGCD_for_P = BigInteger.ZERO;
-        BigInteger resultGCD_for_Q = BigInteger.ZERO;
+        BigInteger resultGCD = BigInteger.ZERO;
         // while GCD != 1
-        while (!(resultGCD_for_P.equals(new BigInteger("1"))) && !(resultGCD_for_Q.equals(new BigInteger("1")))) {
-            resultGCD_for_P = tmpE.gcd(p.subtract(new BigInteger("1")));
-            resultGCD_for_Q = tmpE.gcd(p.subtract(new BigInteger("1")));
+        while (!(resultGCD.equals(new BigInteger("1")))) {
+            resultGCD = tmpE.gcd(phi.subtract(new BigInteger("1")));
 
             tmpE = tmpE.add(BigInteger.ONE);
         }
@@ -86,10 +84,7 @@ public class RSA {
     }
     
     private BigInteger createPhi() {
-            return (
-                    p.subtract(BigInteger.ONE)
-                            .multiply(p.subtract(BigInteger.ONE))
-            );
+            return ((p.subtract(new BigInteger("1"))).multiply(q.subtract(new BigInteger("1"))));
     }
 
     public BigInteger getPhi() {
@@ -108,8 +103,8 @@ public class RSA {
             counter = counter.add(new BigInteger("1"));
         } while (resultPGDC.equals(BigInteger.ONE));
         return minPQ.add(counter).subtract(new BigInteger("1"));*/
-        //return modInv(e,phi);
-        return e.modInverse(phi);
+        return modInv(e,phi);
+        //return e.modInverse(phi);
     }
 
     private BigInteger modInv(BigInteger _e,BigInteger _phi) {
