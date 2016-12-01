@@ -46,19 +46,31 @@ public class RSATest {
             Assert.assertArrayEquals(raw, decrypted);
         }*/
 
-        RSA rsa = new RSA(new BigInteger("11"), new BigInteger("17"));
+        RSA rsa = new RSA(1024);
         RSAKeys keys = rsa.getRSAKeys();
-        System.out.println(rsa.toString());
-        byte[] raw = new byte[]{1, 0};
+        byte[] raw = new byte[]{-84, -34};
         byte[] encrypted = RSA.encrypt(raw, keys.getPublicKey());
-        for (int i = 0; i < encrypted.length; i++) {
-            System.out.println(encrypted[i]);
-        }
         byte[] decrypted = RSA.decrypt(encrypted, keys.getPrivateKey());
-        for (int i = 0; i < decrypted.length; i++) {
-            System.out.println(decrypted[i]);
-        }
         Assert.assertArrayEquals(raw, decrypted);
+
+        MessageType messageType = new MessageType();
+        messageType.setType(MessageType.Type.Message);
+        messageType.setData("Hello world");
+        byte[] messageRaw = SerializableUtils.convertToBytes(messageType);
+        byte[] messageEncrypted = RSA.encrypt(messageRaw, keys.getPublicKey());
+        byte[] messageDecrypted = RSA.decrypt(messageEncrypted, keys.getPrivateKey());
+        for(int i = 0; i < messageRaw.length; i++)
+        {
+            System.out.print(messageRaw[i] + " ");
+        }
+        System.out.println();
+        for(int i = 0; i < messageDecrypted.length; i++)
+        {
+            System.out.print(messageDecrypted[i] + " ");
+        }
+        assertArrayEquals(messageRaw, messageDecrypted);
+        MessageType message = (MessageType) SerializableUtils.convertFromBytes(messageDecrypted);
+        Assert.assertTrue(message.equals(messageType));
     }
 
     @Test

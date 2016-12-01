@@ -103,6 +103,9 @@ public class ThreadClient extends Thread{
         try {
             byteToSendDecrypted = SerializableUtils.convertToBytes(messageType);
             byteToSendEncrypted = RSA.encrypt(byteToSendDecrypted,RSAClientLocalKey);
+            for (int i = 0; i < byteToSendEncrypted.length; i++) {
+                System.out.print(byteToSendEncrypted[i] + " ");
+            }
             out.writeInt(byteToSendEncrypted.length);
             out.flush();
             out.write(byteToSendEncrypted);

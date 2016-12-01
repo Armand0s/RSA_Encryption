@@ -162,8 +162,15 @@ public class RSA {
     }
 
     public static synchronized byte[] decrypt(byte[] byteArray, RSAPrivateKey privateKey) {
-        BigInteger bigInteger = new BigInteger(byteArray);
+        BigInteger bigInteger = new BigInteger(1, byteArray);
         BigInteger bigIntegerDecrypted = bigInteger.modPow(privateKey.getD(), privateKey.getN());
+        byte[] decrypted = bigIntegerDecrypted.toByteArray();
+        if(decrypted[0] == 0)
+        {
+            byte[] tmp = new byte[decrypted.length - 1];
+            System.arraycopy(decrypted, 1, tmp, 0, decrypted.length-1);
+            return tmp;
+        }
         return bigIntegerDecrypted.toByteArray();
     }
 
@@ -178,7 +185,7 @@ public class RSA {
     }
 
     public static synchronized byte[] encrypt(byte[] byteArray, RSAPublicKey publicKey) {
-        BigInteger bigInteger = new BigInteger(byteArray);
+        BigInteger bigInteger = new BigInteger(1, byteArray);
         BigInteger bigIntegerEncrypted = bigInteger.modPow(publicKey.getE(), publicKey.getN());
         return bigIntegerEncrypted.toByteArray();
     }

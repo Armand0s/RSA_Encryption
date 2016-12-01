@@ -133,6 +133,9 @@ public class Client {
             in.read(byteToReceiveEncrypted);
             //messageType = (MessageType) RSA.decryptObject(byteToReceive,RSAKeysLocal.getPrivateKey());
             byteToReceiveDecrypted = RSA.decrypt(byteToReceiveEncrypted,RSAKeysLocal.getPrivateKey());
+            for (int i = 0; i < byteToReceiveDecrypted.length; i++) {
+                System.out.print(byteToReceiveDecrypted[i] + " ");
+            }
             messageType = (MessageType) SerializableUtils.convertFromBytes(byteToReceiveDecrypted);
         } catch (IOException e) {
             System.err.println("Unable to get Key from client");
