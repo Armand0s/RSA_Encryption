@@ -44,6 +44,9 @@ public class RSA {
         RSAKeys = new RSAKeys();
         this.p = p;
         this.q = q;
+        if (!((p.gcd(q)).equals(new BigInteger("1")))) {
+            System.out.println("Caution, p and q are not prime each other !!!");
+        }
         createKeys();
     }
 
