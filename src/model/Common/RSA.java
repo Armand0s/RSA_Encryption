@@ -33,8 +33,10 @@ public class RSA {
     public RSA(int bitsLenght){
         RSAKeys = new RSAKeys();
         // get prime numbers
-        p = BigInteger.probablePrime(bitsLenght, random);
-        q = BigInteger.probablePrime(bitsLenght, random);
+        do {
+            p = BigInteger.probablePrime(bitsLenght, random);
+            q = BigInteger.probablePrime(bitsLenght, random);
+        } while (!((p.gcd(q)).equals(new BigInteger("1"))));
         createKeys();
     }
     
@@ -42,6 +44,9 @@ public class RSA {
         RSAKeys = new RSAKeys();
         this.p = p;
         this.q = q;
+        if (!((p.gcd(q)).equals(new BigInteger("1")))) {
+            System.out.println("Caution, p and q are not prime each other !!!");
+        }
         createKeys();
     }
 
@@ -144,7 +149,7 @@ public class RSA {
 
     
     public String toString() {
-        String ret = "p                : " + p + "\n"
+        String ret = "p               : " + p + "\n"
                 + "q               : " + q + "\n"
                 + "n               : " + n + "\n"
                 + "d               : " + d + "\n"
