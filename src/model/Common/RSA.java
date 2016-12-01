@@ -72,7 +72,7 @@ public class RSA {
         BigInteger resultGCD = BigInteger.ZERO;
         // while GCD != 1
         while (!(resultGCD.equals(new BigInteger("1")))) {
-            resultGCD = tmpE.gcd(phi.subtract(new BigInteger("1")));
+            resultGCD = tmpE.gcd(phi);
 
             tmpE = tmpE.add(BigInteger.ONE);
         }
