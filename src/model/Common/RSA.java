@@ -6,8 +6,12 @@
 package model.Common;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigInteger;
+import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.util.Arrays;
 
 /**
  *
@@ -112,7 +116,8 @@ public class RSA {
         //return e.modInverse(phi);
     }
 
-    private BigInteger modInv(BigInteger _e,BigInteger _phi) {
+    // ne marche pas !!!!!
+    public BigInteger modInv(BigInteger _e,BigInteger _phi) {
         BigInteger[] u = new BigInteger[3];
         BigInteger[] v = new BigInteger[3];
         BigInteger q, temp1, temp2, temp3;
@@ -199,4 +204,36 @@ public class RSA {
     }
 
 
+    public static synchronized void EncryptAndSend(byte[] byteToSend, ObjectOutputStream out, RSAPublicKey publicKey) throws IOException{
+        int positionSent = 0;
+        //int nbTab = (int) Math.ceil(byteToSend.length/(publicKey.getN().bitLength()-1));
+        int nbTab = (int) byteToSend.length/(publicKey.getN().bitLength()-1);
+        out.writeInt(nbTab);
+        out.writeInt(byteToSend.length);
+        int endPosToSend;
+        do {
+            endPosToSend = ((positionSent + publicKey.getN().bitLength() - 1) > byteToSend.length) ? byteToSend.length : positionSent + publicKey.getN().bitLength() - 1;
+            byte[] byteSend = Arrays.copyOfRange(byteToSend, positionSent, endPosToSend);
+            byte[] byteSendEncrytpted = encrypt(byteSend,publicKey);
+            out.writeInt(byteSendEncrytpted.length);
+            out.write(byteSendEncrytpted);
+            out.flush();
+        } while (endPosToSend != byteToSend.length);
+    }
+
+    public static synchronized byte[] ReceiveAndDecrypt(ObjectInputStream in, RSAPrivateKey privateKey) throws IOException{
+        int nbTab = in.readInt();
+        int length = in.readInt();
+        byte[] finalTab = new byte[length];
+        int posToInsert = 0;
+        for (int i=0;i<nbTab;i++) {
+            int localLength = in.readInt();
+            byte[] localTabEncrypted = new byte[localLength];
+            in.read(localTabEncrypted);
+            byte[] localTabDecrypted = decrypt(localTabEncrypted,privateKey);
+            posToInsert += localTabDecrypted.length;
+            System.arraycopy(localTabDecrypted,0,finalTab,posToInsert,localTabDecrypted.length);
+        }
+        return finalTab;
+    }
 }

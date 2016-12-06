@@ -101,15 +101,17 @@ public class ThreadClient extends Thread{
         byte[] byteToSendDecrypted;
         byte[] byteToSendEncrypted;
         try {
-            byteToSendDecrypted = SerializableUtils.convertToBytes(messageType);
+            /*byteToSendDecrypted = SerializableUtils.convertToBytes(messageType);
             byteToSendEncrypted = RSA.encrypt(byteToSendDecrypted,RSAClientLocalKey);
+            System.out.println(RSAClientLocalKey);
             for (int i = 0; i < byteToSendEncrypted.length; i++) {
                 System.out.print(byteToSendEncrypted[i] + " ");
             }
             out.writeInt(byteToSendEncrypted.length);
             out.flush();
             out.write(byteToSendEncrypted);
-            out.flush();
+            out.flush();*/
+            RSA.EncryptAndSend(SerializableUtils.convertToBytes(messageType),out,RSAClientLocalKey);
         } catch (IOException e) {
             main.logger.severe("Client " + id + " : Unable to send Final Keys to Client");
         }

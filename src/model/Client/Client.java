@@ -127,15 +127,17 @@ public class Client {
     private boolean receiveFinalKeysFromServer() {
         MessageType messageType;
         try {
-            int sizeToReceive = in.readInt();
+            /*int sizeToReceive = in.readInt();
             byte[] byteToReceiveEncrypted = new byte[sizeToReceive];
             byte[] byteToReceiveDecrypted;
             in.read(byteToReceiveEncrypted);
             //messageType = (MessageType) RSA.decryptObject(byteToReceive,RSAKeysLocal.getPrivateKey());
             byteToReceiveDecrypted = RSA.decrypt(byteToReceiveEncrypted,RSAKeysLocal.getPrivateKey());
+            System.out.println(RSAKeysLocal);
             for (int i = 0; i < byteToReceiveDecrypted.length; i++) {
                 System.out.print(byteToReceiveDecrypted[i] + " ");
-            }
+            }*/
+            byte[] byteToReceiveDecrypted = RSA.ReceiveAndDecrypt(in,RSAKeysLocal.getPrivateKey());
             messageType = (MessageType) SerializableUtils.convertFromBytes(byteToReceiveDecrypted);
         } catch (IOException e) {
             System.err.println("Unable to get Key from client");
