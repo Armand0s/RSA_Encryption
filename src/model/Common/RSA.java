@@ -207,17 +207,19 @@ public class RSA {
     public static synchronized void EncryptAndSend(byte[] byteToSend, ObjectOutputStream out, RSAPublicKey publicKey) throws IOException{
         int positionSent = 0;
         //int nbTab = (int) Math.ceil(byteToSend.length/(publicKey.getN().bitLength()-1));
-        int nbTab = (int) byteToSend.length/(publicKey.getN().bitLength()-1);
+        int nbTab = (int) Math.ceil((double) byteToSend.length/ (double) (publicKey.getN().bitLength()/8));
         out.writeInt(nbTab);
         out.writeInt(byteToSend.length);
         int endPosToSend;
         do {
-            endPosToSend = ((positionSent + publicKey.getN().bitLength() - 1) > byteToSend.length) ? byteToSend.length : positionSent + publicKey.getN().bitLength() - 1;
-            byte[] byteSend = Arrays.copyOfRange(byteToSend, positionSent, endPosToSend);
-            byte[] byteSendEncrytpted = encrypt(byteSend,publicKey);
-            out.writeInt(byteSendEncrytpted.length);
-            out.write(byteSendEncrytpted);
+            endPosToSend = ((positionSent + publicKey.getN().bitLength()/8) > byteToSend.length) ? byteToSend.length : positionSent + publicKey.getN().bitLength()/8;
+            byte[] byteSend = new byte[endPosToSend-positionSent];
+            System.arraycopy(byteToSend,positionSent,byteSend,0,byteSend.length);
+            byte[] byteSendEncryptted = encrypt(byteSend,publicKey);
+            out.writeInt(byteSendEncryptted.length);
+            out.write(byteSendEncryptted);
             out.flush();
+            positionSent += (endPosToSend-positionSent);
         } while (endPosToSend != byteToSend.length);
     }
 
