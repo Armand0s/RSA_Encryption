@@ -144,15 +144,11 @@ public class ThreadClient extends Thread{
     public void run() {
 
         while (running) {
-            int sizeToReceive;
-            byte[] bytearray;
             MessageType messageType;
             try {
 
-                sizeToReceive = in.readInt();
-                bytearray = new byte[sizeToReceive];
-                in.read(bytearray);
-                messageType = (MessageType) RSA.decryptObject(bytearray,server.serverKeys.getPrivateKey());
+                byte[] receivedMessage = RSA.ReceiveAndDecrypt(in,server.getOrCreateKeyForClients().getPrivateKey());
+                messageType = (MessageType) SerializableUtils.convertFromBytes(receivedMessage);
 
                 server.analyseMessage(messageType,this);
 

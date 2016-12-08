@@ -236,10 +236,10 @@ public class RSA {
             byte[] localTabEncrypted = new byte[localLength];
             in.read(localTabEncrypted);
             byte[] localTabDecrypted = decrypt(localTabEncrypted,privateKey);
-            for (int j = 0; j < localTabDecrypted.length; j++) {
+            /*for (int j = 0; j < localTabDecrypted.length; j++) {
                 System.out.print(localTabDecrypted[j] + " ");
             }
-            System.out.println();
+            System.out.println();*/
             byte[] removedOne = new byte[localTabDecrypted.length-1];
             System.arraycopy(localTabDecrypted, 1, removedOne, 0, removedOne.length);
             finalTab = combine(finalTab, removedOne);

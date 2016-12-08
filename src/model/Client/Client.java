@@ -30,7 +30,7 @@ public class Client {
         this.pseudo = pseudo;
         RSAKeysLocal = new RSA(1024).getRSAKeys();
         RSAKeys = new RSAKeys();
-        System.out.println(RSAKeysLocal);
+        //System.out.println(RSAKeysLocal);
         run();
     }
 
@@ -55,6 +55,7 @@ public class Client {
         {
             serverListener = new ServerListener(this);
             serverListener.start();
+            sendMessage("Test");
         }
 
     }
@@ -192,10 +193,7 @@ public class Client {
         messageType.setType(MessageType.Type.Message);
         messageType.setData(message);
         try {
-            byte[] buffer = SerializableUtils.convertToBytes(messageType);
-            out.writeInt(buffer.length);
-            out.write(buffer);
-            return true;
+            RSA.EncryptAndSend(SerializableUtils.convertToBytes(messageType),out,RSAKeys.getPublicKey());
         } catch (IOException e) {
             e.printStackTrace();
         }

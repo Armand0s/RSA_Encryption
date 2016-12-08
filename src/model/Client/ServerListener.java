@@ -24,11 +24,11 @@ public class ServerListener extends Thread{
             byte[] byteMessage;
             MessageType messageType;
             try {
-                int sizeToReceive = client.in.readInt();
-                byteMessage = new byte[sizeToReceive];
-                client.in.read(byteMessage);
+                byteMessage = RSA.ReceiveAndDecrypt(client.in,client.RSAKeys.getPrivateKey());
+                messageType = (MessageType) SerializableUtils.convertFromBytes(byteMessage);
 
-                messageType = (MessageType) RSA.decryptObject(byteMessage,client.RSAKeys.getPrivateKey());
+                if (messageType.getType() == MessageType.Type.Message)
+                    System.out.println((String) messageType.getData());
 
             } catch (IOException e) {
                 System.err.println("Server closed connection");
