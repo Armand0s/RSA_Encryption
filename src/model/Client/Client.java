@@ -22,6 +22,7 @@ public class Client {
     public RSAKeys RSAKeys;
     private RSAPublicKey RSAPublicKeyOfServer;
     private RSAKeys RSAKeysLocal;
+    private ServerListener serverListener;
 
     public Client(String ipserver,int port, String pseudo) {
         this.ipserver = ipserver;
@@ -51,12 +52,24 @@ public class Client {
         resSendPseudo = sendPseudoToServer();
 
         if (resInit && resReceivePublicKeyOfServer && resSendKey && resReceiveFinalKeys && resSendPseudo)
-            new ServerListener(this).start();
+        {
+            serverListener = new ServerListener(this);
+            serverListener.start();
+        }
 
     }
 
-
-
+    public void stop() {
+        serverListener.interrupt();
+        try {
+            serverListener.join();
+            socket.close();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private boolean initClient() {
         try {

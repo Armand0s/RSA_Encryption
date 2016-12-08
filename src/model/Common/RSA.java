@@ -206,16 +206,20 @@ public class RSA {
 
     public static synchronized void EncryptAndSend(byte[] byteToSend, ObjectOutputStream out, RSAPublicKey publicKey) throws IOException{
         int positionSent = 0;
-        //int nbTab = (int) Math.ceil(byteToSend.length/(publicKey.getN().bitLength()-1));
-        int nbTab = (int) Math.ceil((double) byteToSend.length/ (double) (publicKey.getN().bitLength()/8));
+        int nbTab = (int) Math.ceil((double) byteToSend.length/ (double) (publicKey.getN().bitLength()/8-1));
         out.writeInt(nbTab);
         out.writeInt(byteToSend.length);
         int endPosToSend;
         do {
-            endPosToSend = ((positionSent + publicKey.getN().bitLength()/8) > byteToSend.length) ? byteToSend.length : positionSent + publicKey.getN().bitLength()/8;
+            endPosToSend = ((positionSent + publicKey.getN().bitLength()/8-1) > byteToSend.length) ? byteToSend.length : positionSent + publicKey.getN().bitLength()/8-1;
             byte[] byteSend = new byte[endPosToSend-positionSent];
             System.arraycopy(byteToSend,positionSent,byteSend,0,byteSend.length);
-            byte[] byteSendEncryptted = encrypt(byteSend,publicKey);
+            byte[] addedOne = new byte[byteSend.length+1];
+            addedOne[0] = 1;
+            for (int i = 1; i < addedOne.length; i++) {
+                addedOne[i] = byteSend[i-1];
+            }
+            byte[] byteSendEncryptted = encrypt(addedOne,publicKey);
             out.writeInt(byteSendEncryptted.length);
             out.write(byteSendEncryptted);
             out.flush();
@@ -226,16 +230,39 @@ public class RSA {
     public static synchronized byte[] ReceiveAndDecrypt(ObjectInputStream in, RSAPrivateKey privateKey) throws IOException{
         int nbTab = in.readInt();
         int length = in.readInt();
-        byte[] finalTab = new byte[length];
-        int posToInsert = 0;
+        byte[] finalTab = {};
         for (int i=0;i<nbTab;i++) {
             int localLength = in.readInt();
             byte[] localTabEncrypted = new byte[localLength];
             in.read(localTabEncrypted);
             byte[] localTabDecrypted = decrypt(localTabEncrypted,privateKey);
-            posToInsert += localTabDecrypted.length;
-            System.arraycopy(localTabDecrypted,0,finalTab,posToInsert,localTabDecrypted.length);
+            for (int j = 0; j < localTabDecrypted.length; j++) {
+                System.out.print(localTabDecrypted[j] + " ");
+            }
+            System.out.println();
+            byte[] removedOne = new byte[localTabDecrypted.length-1];
+            System.arraycopy(localTabDecrypted, 1, removedOne, 0, removedOne.length);
+            finalTab = combine(finalTab, removedOne);
+        }
+        if(finalTab.length != length)
+        {
+
+            for (int i = 0; i < finalTab.length; i++) {
+                System.out.print(finalTab[i] + " ");
+            }
+            System.out.println();
+            System.err.println("Error while receiving message");
+            System.err.println("Size excepted="+length+",received="+finalTab.length);
+            return null;
         }
         return finalTab;
+    }
+
+    public static byte[] combine(byte[] a, byte[] b){
+        int length = a.length + b.length;
+        byte[] result = new byte[length];
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
+        return result;
     }
 }
