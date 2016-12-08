@@ -8,6 +8,7 @@ import model.Common.SerializableUtils;
 import sun.awt.Mutex;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class Server {
         mutexMap = new Mutex();
 
         serverKeys = new RSA(RSA_BYTE_LENGTH).getRSAKeys();
-        clientsRSAKeys = new RSA(RSA_BYTE_LENGTH).getRSAKeys();
+        clientsRSAKeys = new RSA(new BigInteger("59"),new BigInteger("79")).getRSAKeys();
 
         run();
     }

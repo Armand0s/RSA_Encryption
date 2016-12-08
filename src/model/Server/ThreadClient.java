@@ -35,7 +35,7 @@ public class ThreadClient extends Thread{
             in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
-            main.logger.severe("Unable to create IO stream for client");
+            main.logger.severe("Client " + id + " : Creating IO Stream........ FAILED");
             return;
         }
 
@@ -61,10 +61,10 @@ public class ThreadClient extends Thread{
             out.write(byteToSend);
             out.flush();
         } catch (IOException e) {
-            main.logger.severe("Unable to send Server Public Key to Client");
+            main.logger.severe("Client " + id + " : Sending Public Key of Server......... FAILED");
         }
 
-        main.logger.info("Client " + id + " : Public Key SENT");
+        main.logger.info("Client " + id + " : Sending Public Key of Server......... OK");
         return true;
     }
 
@@ -76,18 +76,18 @@ public class ThreadClient extends Thread{
             in.read(arraybyte);
             messageType = (MessageType) SerializableUtils.convertFromBytes(arraybyte);
         } catch (IOException e) {
-            main.logger.severe("Unable to get Public Key of client");
+            main.logger.severe("Client " + id + " : Receiving Public Key of Client......... FAILED (IOException)");
             return false;
         } catch (ClassNotFoundException e) {
-            main.logger.severe("Received object not recognized from client");
+            main.logger.severe("Client " + id + " : Sending Public Key of Server......... OK (ClassNotFoundException");
             return false;
         }
         if (messageType.getType() == MessageType.Type.RSAPublicKey){
             RSAClientLocalKey =(RSAPublicKey) messageType.getData();
-            main.logger.info("Client " + id + " : Client Public Key RECEIVED");
+            main.logger.info("Client " + id + " : Receiving Public Key of Client........ OK");
             return true;
         }
-        main.logger.severe("Client " + id + " : Client Public Key NOT RECEIVED");
+        main.logger.severe("Client " + id + " : Sending Public Key of Server......... FAILED (Unknown Error)");
         return false;
 
     }
@@ -113,9 +113,9 @@ public class ThreadClient extends Thread{
             out.flush();*/
             RSA.EncryptAndSend(SerializableUtils.convertToBytes(messageType),out,RSAClientLocalKey);
         } catch (IOException e) {
-            main.logger.severe("Client " + id + " : Unable to send Final Keys to Client");
+            main.logger.severe("Client " + id + " : Sending Final Keys to Client........ FAILED");
         }
-        main.logger.info("Client " + id + " : Final Keys SENT");
+        main.logger.info("Client " + id + " : Sending Final Keys to Client........ OK");
         return true;
     }
 
@@ -127,16 +127,16 @@ public class ThreadClient extends Thread{
             in.read(arraybyte);
             messageType = (MessageType) RSA.decryptObject(arraybyte,server.getOrCreateKeyForClients().getPrivateKey());
         } catch (IOException e) {
-            main.logger.severe("Unable to get Public Key of client");
+            main.logger.severe("Client " + id + " : Receiving pseudo of client....... FAILED (IOException)");
             return false;
         } catch (ClassNotFoundException e) {
-            main.logger.severe("Received object not recognized from client");
+            main.logger.severe("Client " + id + " : Receiving pseudo of client....... FAILED (ClassNotFoundException)");
             return false;
         }
         if (messageType.getType() == MessageType.Type.Pseudo){
             this.pseudo = (String) messageType.getData();
         }
-        main.logger.info("Client " + id + " : Pseudo RECEIVED");
+        main.logger.info("Client " + id + " : Receiving pseudo of client....... OK");
         return true;
     }
 
@@ -157,10 +157,10 @@ public class ThreadClient extends Thread{
                 server.analyseMessage(messageType,this);
 
             } catch (IOException e) {
-                main.logger.severe("Unable to get Object from client");
+                main.logger.severe("Client " + id + " : Unable to Receive Message from Client (IOException)");
                 break;
             } catch (ClassNotFoundException e) {
-                main.logger.severe("Received object not recognized");
+                main.logger.severe("Client " + id + " : Unable to Receive Message from Client, Steam Corrupted (ClassNotFoundException)");
                 break;
             }
         }

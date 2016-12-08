@@ -61,9 +61,11 @@ public class ControlGroup {
         System.out.println("client or server ?\n");
         String answer = scan.nextLine();
         switch (answer) {
+            case "c":
             case "client":
                 createClient();
                 break;
+            case "s":
             case "server":
                 createServer();
                 break;
@@ -75,12 +77,15 @@ public class ControlGroup {
     private void createClient() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Server IP ?\n");
-        String serverIP = scan.nextLine();
+        //String serverIP = scan.nextLine();
+        String serverIP = "0.0.0.0";
         System.out.println("Server port ?\n");
-        int serverPort = scan.nextInt();
-        scan.nextLine();
+        //int serverPort = scan.nextInt();
+        int serverPort = 4444;
+        //scan.nextLine();
         System.out.println("Pseudo ?\n");
-        String pseudo = scan.nextLine();
+        //String pseudo = scan.nextLine();
+        String pseudo = "ss";
 
         Client client = new Client(serverIP,serverPort,pseudo);
 
@@ -89,7 +94,8 @@ public class ControlGroup {
     private void createServer() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Server port ?\n");
-        int port = scan.nextInt();
+        //int port = scan.nextInt();
+        int port = 4444;
 
         Server server = new Server(port);
     }
