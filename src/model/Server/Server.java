@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 /**
  * @author Armand Souchon
  */
-public class Server {
+public class Server extends Thread{
 
     public static final int RSA_BYTE_LENGTH = 1024;
 
@@ -29,7 +29,7 @@ public class Server {
     private int numNewClient = 0;
     private ArrayList<ThreadClient> clients;
 
-    private boolean running = true;
+    private boolean running = false;
 
     private Mutex mutexMap;
 
@@ -49,12 +49,17 @@ public class Server {
 
         serverKeys = new RSA(RSA_BYTE_LENGTH).getRSAKeys();
         clientsRSAKeys = new RSA(RSA_BYTE_LENGTH).getRSAKeys();
-
-        run();
+        running = true;
+        start();
     }
 
-    private void run() {
-        logfile.info("Server created. IP :" +this.serverSocket.getInetAddress().getHostAddress()+":" + this.serverSocket.getLocalPort());
+    public boolean isRunning(){
+        return running;
+    }
+
+    @Override
+    public void run() {
+        logfile.info("Server created. IP :" +serverSocket.getInetAddress().getHostAddress()+":" + serverSocket.getLocalPort());
         logfile.info("Waiting a client......");
         while(running) {
 
@@ -101,7 +106,7 @@ public class Server {
         }
     }
 
-    private void stop() {
+    public void stopRunning() {
         running = false;
     }
 
