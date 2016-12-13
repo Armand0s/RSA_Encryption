@@ -78,12 +78,15 @@ public class ControlGroup {
         Scanner scan = new Scanner(System.in);
         System.out.println("Server IP ?\n");
         //String serverIP = scan.nextLine();
+        System.out.println("0.0.0.0");
         String serverIP = "0.0.0.0";
         System.out.println("Server port ?\n");
         //int serverPort = scan.nextInt();
+        System.out.println(4444);
         int serverPort = 4444;
         //scan.nextLine();
         System.out.println("Pseudo ?\n");
+        System.out.println("ss");
         //String pseudo = scan.nextLine();
         String pseudo = "ss";
 
@@ -95,6 +98,7 @@ public class ControlGroup {
         Scanner scan = new Scanner(System.in);
         System.out.println("Server port ?\n");
         //int port = scan.nextInt();
+        System.out.println(4444);
         int port = 4444;
 
         Server server = new Server(port);
