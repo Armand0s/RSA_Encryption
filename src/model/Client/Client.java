@@ -5,6 +5,7 @@ import model.Common.*;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Scanner;
 
 /**
  * @author Armand Souchon
@@ -36,6 +37,7 @@ public class Client {
 
     private void run() {
 
+        Scanner scan = new Scanner(System.in);
         boolean resInit;
         resInit = initClient();
 
@@ -55,9 +57,8 @@ public class Client {
         {
             serverListener = new ServerListener(this);
             serverListener.start();
-            sendMessage("Test");
+            sendMessage("TestMessage123123");
         }
-
     }
 
     public void stop() {
@@ -76,16 +77,16 @@ public class Client {
         try {
             socket = new Socket(ipserver, port);
         } catch (IOException e) {
-            System.err.println("Unable to connect to server IP:"+ipserver+"/"+port);
+            System.err.println("Connecting to server....... FAILED "+ipserver+"/"+port);
             return false;
         }
-        System.out.println("Connected to server " + ipserver + "/" + port);
+        System.out.println("Connecting to server..... OK " + ipserver + "/" + port);
 
         try {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            System.err.println("Unable to connect socket streams");
+            System.err.println("Creating socket stream..... FAILED");
             return false;
         }
 
@@ -101,17 +102,16 @@ public class Client {
             messageType = (MessageType) SerializableUtils.convertFromBytes(arraybyte);
 
         } catch (IOException e) {
-            System.err.println("Unable to get Key from client");
+            System.err.println("Receiving public key of server........ FAILED (IOException)");
             return false;
         } catch (ClassNotFoundException e) {
-            System.err.println("Received object not recognized from client");
+            System.err.println("Receiving public key of server........ FAILED (ClassNotFoundException)");
             return false;
         }
         if (messageType.getType() == MessageType.Type.RSAPublicKey){
             RSAPublicKeyOfServer = (RSAPublicKey) messageType.getData();
-            System.out.println("Public Key of Server received  OK");
+            System.out.println("Receiving public key of server........ OK");
             return true;
-
         }
         return false;
     }
@@ -130,10 +130,10 @@ public class Client {
             out.write(byteToSend);
             out.flush();
         } catch (IOException e) {
-            System.err.println("Can't send the public key");
+            System.err.println("Sending local key to server........... FAILED");
             return false;
         }
-        System.out.println("Local public key sent OK");
+        System.out.println("Sending local key to server........... OK");
         return true;
     }
 
@@ -141,30 +141,20 @@ public class Client {
     private boolean receiveFinalKeysFromServer() {
         MessageType messageType;
         try {
-            /*int sizeToReceive = in.readInt();
-            byte[] byteToReceiveEncrypted = new byte[sizeToReceive];
-            byte[] byteToReceiveDecrypted;
-            in.read(byteToReceiveEncrypted);
-            //messageType = (MessageType) RSA.decryptObject(byteToReceive,RSAKeysLocal.getPrivateKey());
-            byteToReceiveDecrypted = RSA.decrypt(byteToReceiveEncrypted,RSAKeysLocal.getPrivateKey());
-            System.out.println(RSAKeysLocal);
-            for (int i = 0; i < byteToReceiveDecrypted.length; i++) {
-                System.out.print(byteToReceiveDecrypted[i] + " ");
-            }*/
             byte[] byteToReceiveDecrypted = RSA.ReceiveAndDecrypt(in,RSAKeysLocal.getPrivateKey());
             messageType = (MessageType) SerializableUtils.convertFromBytes(byteToReceiveDecrypted);
         } catch (IOException e) {
-            System.err.println("Unable to get Key from client");
+            System.err.println("Receiving final keys............. FAILED (IOException)");
             e.printStackTrace();
             return false;
         } catch (ClassNotFoundException e) {
-            System.err.println("Received object not recognized from client");
+            System.err.println("Receiving final keys............. FAILED (ClassNotFoundException)");
             return false;
         }
         if (messageType.getType() == MessageType.Type.RSAKeys){
             RSAKeys = (RSAKeys) messageType.getData();
         }
-        System.out.println("Final keys received OK");
+        System.out.println("Receiving final keys............. OK");
         return true;
     }
 
@@ -180,9 +170,10 @@ public class Client {
             out.write(messageTypeByteArrayEncrypted);
             out.flush();
         } catch (IOException e) {
-            System.err.println("Unable to send Pseudo to server");
+            System.err.println("Sending pseudo to Server.............. FAILED");
             return false;
         }
+        System.out.println("Sending pseudo to Server.............. OK");
 
     return true;
 
@@ -193,7 +184,9 @@ public class Client {
         messageType.setType(MessageType.Type.Message);
         messageType.setData(message);
         try {
-            RSA.EncryptAndSend(SerializableUtils.convertToBytes(messageType),out,RSAKeys.getPublicKey());
+            RSAPublicKey rsaPrivateKey = RSAKeys.getPublicKey();
+            byte[] sendTmp = SerializableUtils.convertToBytes(messageType);
+            RSA.EncryptAndSend(sendTmp,out,rsaPrivateKey);
         } catch (IOException e) {
             e.printStackTrace();
         }
