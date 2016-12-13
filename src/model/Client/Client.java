@@ -57,11 +57,15 @@ public class Client {
         boolean resSendPseudo;
         resSendPseudo = sendPseudoToServer();
 
+
         if (resInit && resReceivePublicKeyOfServer && resSendKey && resReceiveFinalKeys && resSendPseudo)
         {
             serverListener = new ServerListener(this);
             serverListener.start();
-            sendMessage("TestMessage123123");
+            while (true) {
+                String str = scan.nextLine();
+                sendMessage(str);
+            }
         }
     }
 
@@ -191,6 +195,7 @@ public class Client {
             RSAPublicKey rsaPrivateKey = RSAKeys.getPublicKey();
             byte[] sendTmp = SerializableUtils.convertToBytes(messageType);
             RSA.EncryptAndSend(sendTmp,out,rsaPrivateKey);
+            out.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
