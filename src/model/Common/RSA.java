@@ -166,7 +166,7 @@ public class RSA {
         return ret;
     }
 
-    public static synchronized byte[] decrypt(byte[] byteArray, RSAPrivateKey privateKey) {
+    public static byte[] decrypt(byte[] byteArray, RSAPrivateKey privateKey) {
         BigInteger bigInteger = new BigInteger(1, byteArray);
         BigInteger bigIntegerDecrypted = bigInteger.modPow(privateKey.getD(), privateKey.getN());
         byte[] decrypted = bigIntegerDecrypted.toByteArray();
@@ -179,32 +179,32 @@ public class RSA {
         return bigIntegerDecrypted.toByteArray();
     }
 
-    public static synchronized BigInteger encrypt(BigInteger bigInteger, RSAPublicKey publicKey) {
+    public static BigInteger encrypt(BigInteger bigInteger, RSAPublicKey publicKey) {
         BigInteger bigIntegerEncrypted = bigInteger.modPow(publicKey.getE(), publicKey.getN());
         return bigIntegerEncrypted;
     }
 
-    public static synchronized BigInteger decrypt(BigInteger bigInteger, RSAPrivateKey privateKey) {
+    public static BigInteger decrypt(BigInteger bigInteger, RSAPrivateKey privateKey) {
         BigInteger bigIntegerDecrypted = bigInteger.modPow(privateKey.getD(), privateKey.getN());
         return bigIntegerDecrypted;
     }
 
-    public static synchronized byte[] encrypt(byte[] byteArray, RSAPublicKey publicKey) {
+    public static byte[] encrypt(byte[] byteArray, RSAPublicKey publicKey) {
         BigInteger bigInteger = new BigInteger(1, byteArray);
         BigInteger bigIntegerEncrypted = bigInteger.modPow(publicKey.getE(), publicKey.getN());
         return bigIntegerEncrypted.toByteArray();
     }
 
-    public static synchronized Object decryptObject(byte[] byteArray, RSAPrivateKey privateKey) throws IOException, ClassNotFoundException{
+    public static Object decryptObject(byte[] byteArray, RSAPrivateKey privateKey) throws IOException, ClassNotFoundException{
         return SerializableUtils.convertFromBytes(decrypt(byteArray,privateKey));
     }
 
-    public static synchronized byte[] encryptObject(Object object, RSAPublicKey publicKey) throws IOException{
+    public static byte[] encryptObject(Object object, RSAPublicKey publicKey) throws IOException{
         return encrypt(SerializableUtils.convertToBytes(object),publicKey);
     }
 
 
-    public static synchronized void EncryptAndSend(byte[] byteToSend, ObjectOutputStream out, RSAPublicKey publicKey) throws IOException{
+    public static void EncryptAndSend(byte[] byteToSend, ObjectOutputStream out, RSAPublicKey publicKey) throws IOException{
         int positionSent = 0;
         int nbTab = (int) Math.ceil((double) byteToSend.length/ (double) (publicKey.getN().bitLength()/8-1));
         out.writeInt(nbTab);
@@ -228,7 +228,7 @@ public class RSA {
         } while (endPosToSend != byteToSend.length);
     }
 
-    public static synchronized byte[] ReceiveAndDecrypt(ObjectInputStream in, RSAPrivateKey privateKey) throws IOException{
+    public static byte[] ReceiveAndDecrypt(ObjectInputStream in, RSAPrivateKey privateKey) throws IOException{
         int nbTab = in.readInt();
         int length = in.readInt();
         byte[] finalTab = {};
