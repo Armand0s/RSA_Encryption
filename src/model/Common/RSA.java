@@ -221,6 +221,7 @@ public class RSA {
             }
             byte[] byteSendEncryptted = encrypt(addedOne,publicKey);
             out.writeInt(byteSendEncryptted.length);
+            out.flush();
             out.write(byteSendEncryptted);
             out.flush();
             positionSent += (endPosToSend-positionSent);

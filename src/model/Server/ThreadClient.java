@@ -141,7 +141,8 @@ public class ThreadClient extends Thread{
                 server.analyseMessage(messageType,this);
 
             } catch (IOException e) {
-                main.logger.severe("Client " + id + " : Unable to Receive Message from Client (IOException)");
+                main.logger.severe("Client " + id + " : Unable to Receive Message from Client (IOException) " + e.getMessage());
+
                 break;
             } catch (ClassNotFoundException e) {
                 main.logger.severe("Client " + id + " : Unable to Receive Message from Client, Steam Corrupted (ClassNotFoundException)");
