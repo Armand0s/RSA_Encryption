@@ -96,7 +96,7 @@ public class Server extends Thread{
         }
     }
 
-    private synchronized void disconnectClient(int id) {
+    public void disconnectClient(int id) {
         // scan the array list until we found the Id
         for(int i = 0; i < clients.size(); ++i) {
             ThreadClient ct = clients.get(i);
