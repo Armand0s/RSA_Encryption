@@ -86,9 +86,8 @@ public class ControlGroup {
         int serverPort = 4444;
         //scan.nextLine();
         System.out.println("Pseudo ?\n");
-        System.out.println("ss");
-        //String pseudo = scan.nextLine();
-        String pseudo = "ss";
+        String pseudo = scan.nextLine();
+        //String pseudo = "ss";
 
         Client client = new Client(serverIP,serverPort,pseudo, view);
 
