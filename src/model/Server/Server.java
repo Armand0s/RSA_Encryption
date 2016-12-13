@@ -119,7 +119,7 @@ public class Server extends Thread{
         }
         return true;
     }
-    
+
     private boolean sendMessage(String message,ThreadClient client) {
         MessageType messageType = new MessageType();
         messageType.setType(MessageType.Type.Message);
