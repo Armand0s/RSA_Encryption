@@ -41,6 +41,7 @@ public class ControlConnect extends Control {
 
         if(e.getSource() == view.textFieldMessageZone){
             //Send message to server and clear text field
+
             view.clearTextBox();
         }
     }

@@ -37,6 +37,7 @@ public class ServerListener extends Thread{
                 break;
             }
             if (messageType.getType() == MessageType.Type.Message) {
+                client.receiveMessage((String) messageType.getData());
                 System.out.println((String) messageType.getData());
                 System.out.print("> ");
             }

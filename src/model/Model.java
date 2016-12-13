@@ -5,6 +5,9 @@
  */
 package model;
 
+import model.Client.Client;
+import model.Server.Server;
+
 /**
  *
  * @author Nicolas
@@ -12,7 +15,7 @@ package model;
 public class Model {
     private boolean isConnecting;
     
-    public Model(){
+    public Model(Server server, Client client){
         isConnecting = false;
     }
     
