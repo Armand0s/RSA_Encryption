@@ -127,6 +127,7 @@ public class Server extends Thread{
         try {
             byte[] messageToSend = SerializableUtils.convertToBytes(messageType);
             RSA.EncryptAndSend(messageToSend,client.out,getOrCreateKeyForClients().getPublicKey());
+            client.out.flush();
             return true;
         } catch (IOException e) {
             e.printStackTrace();

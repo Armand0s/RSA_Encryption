@@ -61,7 +61,7 @@ public class ThreadClient extends Thread{
             out.write(byteToSend);
             out.flush();
         } catch (IOException e) {
-            main.logger.severe("Client " + id + " : Sending Public Key of Server......... FAILED");
+            main.logger.severe("Client " + id + " : Sending Public Key of Server......... FAILED (IOException)");
         }
 
         main.logger.info("Client " + id + " : Sending Public Key of Server............. OK");
@@ -100,8 +100,10 @@ public class ThreadClient extends Thread{
 
         try {
             RSA.EncryptAndSend(SerializableUtils.convertToBytes(messageType),out,RSAClientLocalKey);
+            out.flush();
         } catch (IOException e) {
-            main.logger.severe("Client " + id + " : Sending Final Keys to Client........ FAILED");
+            main.logger.severe("Client " + id + " : Sending Final Keys to Client........ FAILED (IOException");
+            return false;
         }
         main.logger.info("Client " + id + " : Sending Final Keys to Client............. OK");
         return true;
