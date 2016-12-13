@@ -59,15 +59,6 @@ public class RSATest {
         byte[] messageRaw = SerializableUtils.convertToBytes(messageType);
         byte[] messageEncrypted = RSA.encrypt(messageRaw, keys.getPublicKey());
         byte[] messageDecrypted = RSA.decrypt(messageEncrypted, keys.getPrivateKey());
-        for(int i = 0; i < messageRaw.length; i++)
-        {
-            System.out.print(messageRaw[i] + " ");
-        }
-        System.out.println();
-        for(int i = 0; i < messageDecrypted.length; i++)
-        {
-            System.out.print(messageDecrypted[i] + " ");
-        }
         assertArrayEquals(messageRaw, messageDecrypted);
         MessageType message = (MessageType) SerializableUtils.convertFromBytes(messageDecrypted);
         Assert.assertTrue(message.equals(messageType));

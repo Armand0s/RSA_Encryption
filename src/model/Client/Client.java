@@ -2,6 +2,8 @@ package model.Client;
 
 import main.main;
 import model.Common.*;
+import ui.View;
+import ui.ViewAbstract;
 
 import java.io.*;
 import java.net.Socket;
@@ -23,13 +25,15 @@ public class Client {
     private RSAPublicKey RSAPublicKeyOfServer;
     private RSAKeys RSAKeysLocal;
     private ServerListener serverListener;
+    private View vue;
 
-    public Client(String ipserver,int port, String pseudo) {
+    public Client(String ipserver, int port, String pseudo, View vue) {
         this.ipserver = ipserver;
         this.port = port;
         this.pseudo = pseudo;
         RSAKeysLocal = new RSA(1024).getRSAKeys();
         RSAKeys = new RSAKeys();
+        this.vue = vue;
         //System.out.println(RSAKeysLocal);
         run();
     }
@@ -200,4 +204,8 @@ public class Client {
         return false;
     }
 
+    public void receiveMessage(String message)
+    {
+        vue.addTextToLog(message);
+    }
 }

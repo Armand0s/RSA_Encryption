@@ -87,7 +87,7 @@ public class ControlGroup {
         //String pseudo = scan.nextLine();
         String pseudo = "ss";
 
-        Client client = new Client(serverIP,serverPort,pseudo);
+        Client client = new Client(serverIP,serverPort,pseudo, view);
 
     }
 
