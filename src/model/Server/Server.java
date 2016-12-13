@@ -113,7 +113,7 @@ public class Server extends Thread{
 
     public boolean broadcast(String message) {
         for (int i=0;i<clients.size();i++) {
-            if (sendMessage(message,clients.get(i))) {
+            if (!sendMessage(message,clients.get(i))) {
                 return false;
             }
         }
