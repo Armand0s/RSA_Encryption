@@ -119,7 +119,7 @@ public class Server extends Thread{
         }
         return true;
     }
-    // TODO
+    
     private boolean sendMessage(String message,ThreadClient client) {
         MessageType messageType = new MessageType();
         messageType.setType(MessageType.Type.Message);
@@ -146,7 +146,8 @@ public class Server extends Thread{
         switch (messageType.getType()) {
             case Message:
                 String message = (String) messageType.getData();
-                this.broadcast(message);
+                //System.out.println(message);
+                this.broadcast(threadClient.pseudo + " : " + message);
                 break;
             default:
                 main.logger.severe("Message send by client " + threadClient.id + " : " + threadClient.pseudo + " not recognized");

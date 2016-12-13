@@ -64,7 +64,7 @@ public class ThreadClient extends Thread{
             main.logger.severe("Client " + id + " : Sending Public Key of Server......... FAILED");
         }
 
-        main.logger.info("Client " + id + " : Sending Public Key of Server......... OK");
+        main.logger.info("Client " + id + " : Sending Public Key of Server............. OK");
         return true;
     }
 
@@ -79,12 +79,12 @@ public class ThreadClient extends Thread{
             main.logger.severe("Client " + id + " : Receiving Public Key of Client......... FAILED (IOException)");
             return false;
         } catch (ClassNotFoundException e) {
-            main.logger.severe("Client " + id + " : Sending Public Key of Server......... OK (ClassNotFoundException");
+            main.logger.severe("Client " + id + " : Sending Public Key of Server......... FAILED (ClassNotFoundException");
             return false;
         }
         if (messageType.getType() == MessageType.Type.RSAPublicKey){
             RSAClientLocalKey =(RSAPublicKey) messageType.getData();
-            main.logger.info("Client " + id + " : Receiving Public Key of Client........ OK");
+            main.logger.info("Client " + id + " : Receiving Public Key of Client........... OK");
             return true;
         }
         main.logger.severe("Client " + id + " : Sending Public Key of Server......... FAILED (Unknown Error)");
@@ -98,24 +98,12 @@ public class ThreadClient extends Thread{
         messageType.setType(MessageType.Type.RSAKeys);
         messageType.setData(server.clientsRSAKeys);
 
-        byte[] byteToSendDecrypted;
-        byte[] byteToSendEncrypted;
         try {
-            /*byteToSendDecrypted = SerializableUtils.convertToBytes(messageType);
-            byteToSendEncrypted = RSA.encrypt(byteToSendDecrypted,RSAClientLocalKey);
-            System.out.println(RSAClientLocalKey);
-            for (int i = 0; i < byteToSendEncrypted.length; i++) {
-                System.out.print(byteToSendEncrypted[i] + " ");
-            }
-            out.writeInt(byteToSendEncrypted.length);
-            out.flush();
-            out.write(byteToSendEncrypted);
-            out.flush();*/
             RSA.EncryptAndSend(SerializableUtils.convertToBytes(messageType),out,RSAClientLocalKey);
         } catch (IOException e) {
             main.logger.severe("Client " + id + " : Sending Final Keys to Client........ FAILED");
         }
-        main.logger.info("Client " + id + " : Sending Final Keys to Client........ OK");
+        main.logger.info("Client " + id + " : Sending Final Keys to Client............. OK");
         return true;
     }
 
@@ -136,7 +124,7 @@ public class ThreadClient extends Thread{
         if (messageType.getType() == MessageType.Type.Pseudo){
             this.pseudo = (String) messageType.getData();
         }
-        main.logger.info("Client " + id + " : Receiving pseudo of client....... OK");
+        main.logger.info("Client " + id + " : Receiving pseudo of client............... OK (pseudo = " + pseudo + ")");
         return true;
     }
 
