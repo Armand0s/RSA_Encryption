@@ -12,7 +12,7 @@ import java.util.Scanner;
 /**
  * @author Armand Souchon
  */
-public class Client {
+public class Client extends Thread{
 
     private String ipserver;
     private int port;
@@ -36,10 +36,11 @@ public class Client {
         RSAKeys = new RSAKeys();
         this.vue = vue;
         //System.out.println(RSAKeysLocal);
-        run();
+        start();
     }
 
-    private void run() {
+    @Override
+    public void run() {
 
         Scanner scan = new Scanner(System.in);
         boolean resInit;
@@ -69,7 +70,7 @@ public class Client {
         }
     }
 
-    public void stop() {
+    public void stopServer() {
         serverListener.interrupt();
         try {
             serverListener.join();
