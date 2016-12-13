@@ -77,14 +77,14 @@ public class ControlGroup {
     private void createClient() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Server IP ?\n");
-        //String serverIP = scan.nextLine();
-        System.out.println("0.0.0.0");
-        String serverIP = "0.0.0.0";
+        String serverIP = scan.nextLine();
+        //System.out.println("0.0.0.0");
+        //String serverIP = "0.0.0.0";
         System.out.println("Server port ?\n");
-        //int serverPort = scan.nextInt();
-        System.out.println(4444);
-        int serverPort = 4444;
-        //scan.nextLine();
+        int serverPort = scan.nextInt();
+        //System.out.println(4444);
+        //int serverPort = 4444;
+        scan.nextLine();
         System.out.println("Pseudo ?\n");
         String pseudo = scan.nextLine();
         //String pseudo = "ss";

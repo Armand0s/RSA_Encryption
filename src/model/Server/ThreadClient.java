@@ -142,8 +142,11 @@ public class ThreadClient extends Thread{
 
                 server.analyseMessage(messageType,this);
 
-            } catch (IOException e) {
-                main.logger.severe("Client " + id + " : Unable to Receive Message from Client (IOException) " + e.getMessage());
+            } catch (IOException e) { // mean client is disconnected
+                main.logger.info("Client " + id + " disconnected");
+                server.disconnectClient(id);
+                server.broadcast("SERVER : " +pseudo + " has disconnected");
+                //main.logger.severe("Client " + id + " : Unable to Receive Message from Client (IOException) " + e.getMessage());
 
                 break;
             } catch (ClassNotFoundException e) {
