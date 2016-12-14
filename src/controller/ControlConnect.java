@@ -30,7 +30,7 @@ public class ControlConnect extends Control {
         if(e.getSource() == view.buttonLogin){
             if(!model.IsConnecting()){
                 //Connect to server
-                model.connect(view.textFieldIp.getText());
+                model.connect(view.textFieldIp.getText(), Integer.parseInt(view.textFieldPort.getText()), view.textFieldName.getText(), view);
                 view.buttonLogin.setText("Annuler");
                 view.showChat();
             } else {
@@ -41,7 +41,7 @@ public class ControlConnect extends Control {
 
         if(e.getSource() == view.textFieldMessageZone){
             //Send message to server and clear text field
-
+            model.getClient().sendMessage(view.textFieldMessageZone.getText());
             view.clearTextBox();
         }
     }

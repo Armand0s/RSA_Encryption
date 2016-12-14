@@ -7,6 +7,7 @@ package model;
 
 import model.Client.Client;
 import model.Server.Server;
+import ui.View;
 
 /**
  *
@@ -14,8 +15,10 @@ import model.Server.Server;
  */
 public class Model {
     private boolean isConnecting;
+    Server server;
+    Client client;
     
-    public Model(Server server, Client client){
+    public Model(){
         isConnecting = false;
     }
     
@@ -23,8 +26,28 @@ public class Model {
         return isConnecting;
     }
     
-    public void connect(String ip){
-        
+    public void connect(String ip, int port, String name, View view){
+        setClient(new Client(ip, port, name, view));
         isConnecting = true;
+    }
+
+    public void setServer(Server server)
+    {
+        this.server = server;
+    }
+
+    public void setClient(Client client)
+    {
+        this.client = client;
+    }
+
+    public Server getServer()
+    {
+        return server;
+    }
+
+    public Client getClient()
+    {
+        return client;
     }
 }

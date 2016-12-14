@@ -31,7 +31,6 @@ public class ControlGroup {
         this.model = model;
         view = new View(model);
         Control control = new ControlConnect(model, view);
-        view.display();
     }
 
 
@@ -75,7 +74,7 @@ public class ControlGroup {
     }
 
     private void createClient() {
-        Scanner scan = new Scanner(System.in);
+        /*Scanner scan = new Scanner(System.in);
         System.out.println("Server IP ?\n");
         String serverIP = scan.nextLine();
         //System.out.println("0.0.0.0");
@@ -89,26 +88,28 @@ public class ControlGroup {
         String pseudo = scan.nextLine();
         //String pseudo = "ss";
 
-        Client client = new Client(serverIP,serverPort,pseudo, view);
+        Client client = new Client(serverIP,serverPort,pseudo, view);*/
 
+        view.display();
     }
 
     private void createServer() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Server port ?\n");
-        //int port = scan.nextInt();
-        System.out.println(4444);
-        int port = 4444;
+        int port = scan.nextInt();
 
-        Server server = new Server(port);
+        new Server(port);
     }
 
-    public boolean init() {
-
-        if(initLogger()) {
-            askClientOrServer();
-        } else {
-            return false;
+    public boolean init(String type) {
+        initLogger();
+        if (type.equals("client"))
+        {
+            createClient();
+        }
+        else if (type.equals("server"))
+        {
+            createServer();
         }
         return true;
     }

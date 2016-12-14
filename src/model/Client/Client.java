@@ -35,6 +35,7 @@ public class Client extends Thread{
         RSAKeysLocal = new RSA(1024).getRSAKeys();
         RSAKeys = new RSAKeys();
         this.vue = vue;
+        vue.model.setClient(this);
         //System.out.println(RSAKeysLocal);
         start();
     }
@@ -188,7 +189,7 @@ public class Client extends Thread{
 
     }
 
-    private boolean sendMessage(String message) {
+    public boolean sendMessage(String message) {
         MessageType messageType = new MessageType();
         messageType.setType(MessageType.Type.Message);
         messageType.setData(message);

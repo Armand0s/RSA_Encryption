@@ -30,17 +30,31 @@ public class main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-
-
-        javax.swing.SwingUtilities.invokeLater( new Runnable() {
-            public void run() {
-                Model model = new Model();
-                ControlGroup controler = new ControlGroup(model);
-                if(!controler.init())
-                    return;
+        if(args.length > 0)
+        {
+            if (args[0].equals("client"))
+            {
+                javax.swing.SwingUtilities.invokeLater( new Runnable() {
+                    public void run() {
+                        Model model = new Model();
+                        ControlGroup controler = new ControlGroup(model);
+                        if(!controler.init(args[0]))
+                            return;
+                    }
+                });
             }
-        });
+            else if (args[0].equals("server"))
+            {
+                javax.swing.SwingUtilities.invokeLater( new Runnable() {
+                    public void run() {
+                        Model model = new Model();
+                        ControlGroup controler = new ControlGroup(model);
+                        if(!controler.init(args[0]))
+                            return;
+                    }
+                });
+            }
+        }
         }
 
     }
