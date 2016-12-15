@@ -11,6 +11,7 @@ import controller.Control;
 import model.Model;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 /**
  *
@@ -41,6 +42,15 @@ public class View extends ViewAbstract {
         textFieldIp = new JTextField(16);
         textFieldPort = new JTextField(16);
         textFieldName = new JTextField(16);
+        textFieldName.setTransferHandler(null);
+        textFieldName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                if(textFieldName.getText().length()>=16&&!(evt.getKeyChar()== KeyEvent.VK_DELETE||evt.getKeyChar()==KeyEvent.VK_BACK_SPACE)) {
+                    getToolkit().beep();
+                    evt.consume();
+                }
+            }
+        });
         
         labelIp = new JLabel("Adresse ip : ");
         labelPort = new JLabel("Port : ");
@@ -65,6 +75,7 @@ public class View extends ViewAbstract {
 
         textAreaChatLog = new JTextArea(40, 100);
         textAreaChatLog.setEditable(false);
+        textAreaChatLog.setLineWrap(true);
         jScrollPane = new JScrollPane(textAreaChatLog);
         jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         jScrollPane.setBounds(0, 0, 300, 50);

@@ -102,13 +102,12 @@ public class ControlGroup {
     }
 
     public boolean init(String type) {
-        initLogger();
-        if (type.equals("client"))
-        {
+
+        if (type.equals("client")) {
             createClient();
         }
-        else if (type.equals("server"))
-        {
+        else if (type.equals("server")) {
+            initLogger();
             createServer();
         }
         return true;

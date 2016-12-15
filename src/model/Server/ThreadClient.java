@@ -44,6 +44,7 @@ public class ThreadClient extends Thread{
         sendFinalRSAkeysToClient();
         receivePseudoFromClient();
 
+        server.broadcast("SERVER : New client connected : " + pseudo);
         this.start();
 
     }

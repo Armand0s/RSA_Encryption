@@ -64,10 +64,6 @@ public class Client extends Thread{
         {
             serverListener = new ServerListener(this);
             serverListener.start();
-            while (true) {
-                String str = scan.nextLine();
-                sendMessage(str);
-            }
         }
     }
 
@@ -164,7 +160,7 @@ public class Client extends Thread{
         if (messageType.getType() == MessageType.Type.RSAKeys){
             RSAKeys = (RSAKeys) messageType.getData();
         }
-        System.out.println("Receiving final keys............. OK");
+        System.out.println("Receiving final keys.................. OK");
         return true;
     }
 

@@ -53,6 +53,8 @@ public class main {
                             return;
                     }
                 });
+            } else {
+                System.out.println("usage ./");
             }
         }
         }
